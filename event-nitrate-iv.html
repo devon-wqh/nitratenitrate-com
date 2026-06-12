@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nitrate iv — Nitrate</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 2rem;
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    background: #fff;
+    color: #000;
+    max-width: 780px;
+  }
+
+  p {
+    margin: 0 0 1.5rem 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+  }
+
+  .event-header {
+    border-bottom: 1px solid #000;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .event-title {
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 0.4rem;
+  }
+
+  .event-address {
+    color: #555;
+  }
+
+  .program {
+    margin-bottom: 2rem;
+  }
+
+  .program-section {
+    margin-bottom: 1rem;
+  }
+
+  .program-label {
+    font-style: italic;
+    border-bottom: 1px solid #ddd;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .program-item {
+    display: block;
+  }
+
+  .rsvp {
+    margin-top: 1.5rem;
+    max-width: 320px;
+  }
+
+  .rsvp-step {
+    display: none;
+  }
+
+  .rsvp-step.active {
+    display: block;
+  }
+
+  .rsvp label {
+    display: block;
+    font-style: italic;
+    margin-bottom: 0.3rem;
+  }
+
+  .rsvp input[type="email"],
+  .rsvp input[type="text"] {
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    padding: 0.3rem 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+    background: #fff;
+  }
+
+  .rsvp input:focus {
+    border-color: #000;
+  }
+
+  .rsvp button {
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 0.3rem 1rem;
+    cursor: pointer;
+    margin-top: 0.6rem;
+  }
+
+  .rsvp button:hover {
+    background: #333;
+  }
+
+  .rsvp-hint {
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 0.4rem;
+  }
+
+  .rsvp-error {
+    color: #c00;
+    font-size: 0.85rem;
+    margin-top: 0.4rem;
+    display: none;
+  }
+
+  .rsvp-success {
+    font-style: italic;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="/index.html">Nitrate</a>
+  <a href="/events.html">← Events</a>
+</div>
+
+<div class="event-header">
+  <div class="event-title">Nitrate iv</div>
+  <div>August 22, 2025</div>
+  <div class="event-address">743 Franklin Ave<br>Crown Heights, Brooklyn</div>
+</div>
+
+<div class="program">
+  <div class="program-section">
+    <span class="program-label">Film</span>
+    <span class="program-item"><em>The Last Meridian</em> — dir. Camille Droit, 2024, 27 min</span>
+  </div>
+  <div class="program-section">
+    <span class="program-label">Music</span>
+    <span class="program-item">Feral Static</span>
+    <span class="program-item">DJ Westbrook</span>
+  </div>
+  <div class="program-section">
+    <span class="program-label">Artists &amp; Vendors</span>
+    <span class="program-item">Half-Light Studio — screen prints</span>
+    <span class="program-item">Still Life Goods — candles</span>
+  </div>
+  <div class="program-section">
+    <span class="program-label">Food</span>
+    <span class="program-item">Jerk chicken</span>
+    <span class="program-item">Sorrel</span>
+  </div>
+</div>
+
+<div class="rsvp">
+  <!-- Step 1: enter email -->
+  <div class="rsvp-step active" id="step-email">
+    <label for="rsvp-email">RSVP — enter your email</label>
+    <input type="email" id="rsvp-email" placeholder="you@example.com" autocomplete="email">
+    <div class="rsvp-error" id="email-error">Please enter a valid email address.</div>
+    <button onclick="submitEmail()">Send code →</button>
+  </div>
+
+  <!-- Step 2: confirm 6-digit code -->
+  <div class="rsvp-step" id="step-code">
+    <label for="rsvp-code">Enter the 6-digit code sent to your email</label>
+    <input type="text" id="rsvp-code" placeholder="000000" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+    <div class="rsvp-error" id="code-error">Incorrect code. Please try again.</div>
+    <button onclick="submitCode()">Confirm →</button>
+    <div class="rsvp-hint">Didn't get it? <span style="cursor:pointer;text-decoration:underline" onclick="resendCode()">Resend</span></div>
+  </div>
+
+  <!-- Step 3: confirmed -->
+  <div class="rsvp-step" id="step-done">
+    <p class="rsvp-success">You're on the list. See you August 22.</p>
+  </div>
+</div>
+
+<script>
+  let pendingEmail = '';
+
+  function showStep(id) {
+    document.querySelectorAll('.rsvp-step').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function showError(id, show) {
+    document.getElementById(id).style.display = show ? 'block' : 'none';
+  }
+
+  async function submitEmail() {
+    const email = document.getElementById('rsvp-email').value.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showError('email-error', true);
+      return;
+    }
+    showError('email-error', false);
+    pendingEmail = email;
+
+    /* TODO: replace with real endpoint
+    await fetch('/api/rsvp/send-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, event: 'nitrate-iv' })
+    });
+    */
+
+    showStep('step-code');
+  }
+
+  async function submitCode() {
+    const code = document.getElementById('rsvp-code').value.trim();
+    if (code.length !== 6) { showError('code-error', true); return; }
+    showError('code-error', false);
+
+    /* TODO: replace with real endpoint
+    const res = await fetch('/api/rsvp/verify-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: pendingEmail, code, event: 'nitrate-iv' })
+    });
+    if (!res.ok) { showError('code-error', true); return; }
+    */
+
+    showStep('step-done');
+  }
+
+  async function resendCode() {
+    await submitEmail();
+    showStep('step-code');
+  }
+</script>
+
+</body>
+</html>

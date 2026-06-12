@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Events — Nitrate</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 2rem;
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    background: #fff;
+    color: #000;
+    max-width: 1000px;
+  }
+
+  p {
+    margin: 0 0 1.5rem 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .section-label {
+    font-style: italic;
+    border-bottom: 1px solid #000;
+    padding-bottom: 0.2rem;
+    margin: 2rem 0 0;
+  }
+
+  .event-row {
+    display: grid;
+    grid-template-columns: 190px 1fr 200px;
+    gap: 2.5rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid #ddd;
+    align-items: start;
+  }
+
+  .event-row:last-child {
+    border-bottom: none;
+  }
+
+  .event-name {
+    font-weight: 500;
+    margin-bottom: 0.1rem;
+  }
+
+  .event-name a {
+    color: inherit;
+  }
+
+  .event-date,
+  .event-address {
+    color: #555;
+  }
+
+  .program-section {
+    margin-bottom: 0.6rem;
+  }
+
+  .program-label {
+    font-style: italic;
+  }
+
+  .program-item {
+    display: block;
+  }
+
+  .event-flier {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #efefef;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-style: italic;
+    color: #aaa;
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+
+  .event-flier:hover {
+    border-color: #999;
+    text-decoration: none;
+  }
+
+  .event-flier img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media (max-width: 720px) {
+    body { max-width: none; }
+    .event-row {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .event-flier {
+      max-width: 260px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<p><a href="/index.html">Nitrate</a></p>
+
+<div class="section-label">Upcoming</div>
+
+<div class="event-row">
+  <div class="event-meta">
+    <div class="event-name"><a href="/event-nitrate-ii.html">Nitrate ii</a></div>
+    <div class="event-date">June 12, 2025</div>
+    <div class="event-address">463 4th Ave<br>Park Slope</div>
+  </div>
+  <div class="event-program">
+    <div class="program-section">
+      <span class="program-label">Films</span><br>
+      <span class="program-item"><em>The Fuzz</em> — dir. Shannon Ross</span>
+      <span class="program-item"><em>Handball</em> — dir. Eli Beutel</span>
+      <span class="program-item"><em>The Killing Ground</em> — dir. Kevin V. Doan</span>
+      <span class="program-item"><em>Dog</em> — dir. Ben Tan</span>
+      <span class="program-item"><em>Violet & Marlowe</em> — dir. Wesley Wang</span>      <span class="program-item"><em>Haircut</em> — dir. Gavin Edmonds</span>
+      <span class="program-item"><em>The Walls</em> — dir. Dakota Rodes</span>
+      <span class="program-item"><em>Chinatown Cowboy</em> — dir. Jaafar Al-Nabi</span>
+    </div>
+    <div class="program-section">
+      <span class="program-label">Music</span><br>
+      <span class="program-item">fucksimon</span>
+    </div>
+    <div class="program-section">
+      <span class="program-label">Artists &amp; Vendors</span><br>
+      <span class="program-item">Leila Gick — block prints</span>
+      <span class="program-item">Shannon Ross — illustrations</span>
+      <span class="program-item">Sidney Rose White — illustrations + stickers</span>
+    </div>
+    <div class="program-section">
+      <span class="program-label">Food &amp; Drink</span><br>
+      <span class="program-item">Lonches &amp; Chips + Guacamole from Macario</span>
+      <span class="program-item">Topo Chicos</span>
+    </div>
+  </div>
+  <a href="fliers/nitrate-ii.png" class="event-flier"><img src="fliers/nitrate-ii.png" alt="Nitrate ii flier"></a>
+</div>
+
+<div class="event-row">
+  <div class="event-meta">
+    <div class="event-name"><a href="/event-nitrate-iii.html">Nitrate iii</a></div>
+    <div class="event-date">July 7, 2025</div>
+    <div class="event-address">The Slipper Room<br>167 Orchard Street, LES</div>
+  </div>
+  <div class="event-program">
+    <div class="program-section">
+      <span class="program-label">Films</span><br>
+      <span class="program-item"><em>Beautiful but Doomed Attempts at Conversation</em> — dir. Leeban Farah</span>
+      <span class="program-item"><em>Handball</em> — dir. Eli Beutel</span>
+      <span class="program-item"><em>Shithead</em> — dir. Riley Donigan</span>
+      <span class="program-item"><em>Faggo</em> — dir. Sam Hahn</span>
+            <span class="program-item"><em>More to be announced</span>
+    </div>
+    <div class="program-section">
+      <span class="program-label">Music</span><br>
+      <span class="program-item">To be announced</span>
+    </div>
+    
+    
+  </div>
+  <a href="fliers/nitrate-iii.png" class="event-flier"><img src="fliers/nitrate-iii.png" alt="Nitrate iii flier"></a>
+</div>
+
+
+
+<div class="section-label">Past</div>
+
+<div class="event-row">
+  <div class="event-meta">
+    <div class="event-name"><a href="/event-nitrate-i.html">Nitrate i</a></div>
+    <div class="event-date">May 16, 2025</div>
+    <div class="event-address">Nitrate HQ<br>Bed-Stuy, Brooklyn</div>
+  </div>
+  <div class="event-program">
+    <div class="program-section">
+      <span class="program-label">Films</span><br>
+      <span class="program-item"><em>Wolf's Clothing</em> — dir. Shannon Ross</span>
+       <span class="program-item"><em>The Superintendent</em> — dir. Evan Dominguez</span>
+        <span class="program-item"><em>Pile o' Meat</em> — dir. Jonas Bishop Hayes</span>
+        <span class="program-item"><em>Spider</em> — dir. Cate Christiansen</span>
+        <span class="program-item"><em>Old Habits Dyed Pink</em> — dir. Harry Gatlin</span>
+    </div>
+    <div class="program-section">
+      <span class="program-label">Music</span><br>
+      <span class="program-item">DJ 5spice</span>
+    </div>
+    <div class="program-section">
+            <span class="program-label">Artists &amp; Vendors</span><br>
+      <span class="program-item">Leila Gick — block prints</span>
+      <span class="program-item">Shannon Ross — illustrations</span>
+      <span class="program-item">Sidney Rose White — illustrations + stickers</span>
+    </div>
+    <div class="program-section">
+      <span class="program-label">Food</span><br>
+      <span class="program-item">Burgers, Veggie Burgers</span>
+    </div>
+  </div>
+  <a href="fliers/nitrate-i.jpg" class="event-flier"><img src="fliers/nitrate-i.jpg" alt="Nitrate i flier"></a>
+</div>
+
+</body>
+</html>
