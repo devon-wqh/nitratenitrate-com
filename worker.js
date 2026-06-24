@@ -188,9 +188,6 @@ async function statsPage(env, url) {
   <div>Ticket clicks<b>${clicks}</b></div>
 </div>
 
-<h2>Last 24 hours</h2>
-<canvas id="hourChart"></canvas>
-
 <h2>Trending</h2>
 <div class="controls">
   <select id="periodSel">
@@ -247,18 +244,6 @@ var baseOpts = {
 
 function hLabel(b) { return new Date(b * 3600000).toLocaleTimeString([], { hour: "numeric", hour12: true }); }
 function dLabel(b) { return new Date(b * 86400000 + 43200000).toLocaleDateString([], { month: "short", day: "numeric" }); }
-
-// Fixed 24-hour chart
-new Chart(document.getElementById("hourChart"), {
-  type: "line",
-  data: {
-    labels: DATA.hourly.map(function(d) { return hLabel(d.bucket); }),
-    datasets: [{ data: DATA.hourly.map(function(d) { return d.n; }),
-      borderColor: "#000", backgroundColor: "rgba(0,0,0,0.04)",
-      borderWidth: 1.5, pointRadius: 2, fill: true, tension: 0.3 }]
-  },
-  options: baseOpts
-});
 
 // Toggleable period chart
 var periodChart = null;
