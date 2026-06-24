@@ -1,8 +1,13 @@
 name = "nitratenitrate-com"
+main = "worker.js"
 compatibility_date = "2026-06-24"
-pages_build_output_dir = "."
 
-# Click counter for the Tickets links (used by functions/go/*.js)
+# Serve the static HTML/images straight from the repo root.
+[assets]
+directory = "."
+binding = "ASSETS"
+
+# Click counter for the Tickets links (written by worker.js).
 [[analytics_engine_datasets]]
 binding = "TICKETS"
 dataset = "ticket_clicks"
