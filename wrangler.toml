@@ -2,12 +2,18 @@ name = "nitratenitrate-com"
 main = "worker.js"
 compatibility_date = "2026-06-24"
 
-# Serve the static HTML/images straight from the repo root.
+# Serve the static HTML/images, and run the Worker first so it can log views.
 [assets]
 directory = "."
 binding = "ASSETS"
+run_worker_first = true
 
-# Click counter for the Tickets links (written by worker.js).
-[[analytics_engine_datasets]]
-binding = "TICKETS"
-dataset = "ticket_clicks"
+# Permanent event log (views + clicks). database_id filled in after creating
+# the D1 database in the Cloudflare dashboard.
+[[d1_databases]]
+binding = "DB"
+database_name = "nitrate-stats"
+database_id = "e8b2044b-10d1-4122-b0c5-6dafb706e9a1"
+
+# Note: STATS_KEY (the /stats password) is set as an encrypted Worker secret,
+# not here, because this repo is public.
