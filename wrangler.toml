@@ -1,0 +1,8 @@
+name = "nitratenitrate-com"
+compatibility_date = "2026-06-24"
+pages_build_output_dir = "."
+
+# Click counter for the Tickets links (used by functions/go/*.js)
+[[analytics_engine_datasets]]
+binding = "TICKETS"
+dataset = "ticket_clicks"
