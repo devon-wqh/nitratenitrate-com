@@ -13,7 +13,7 @@
     line-height: 1.6;
     background: #fff;
     color: #000;
-    max-width: 780px;
+    max-width: 600px;
   }
 
   p {
@@ -69,29 +69,41 @@
 
   .program-item {
     display: block;
+    color: #aaa;
   }
 
   .rsvp {
     margin-top: 1.5rem;
-    max-width: 320px;
+    max-width: 280px;
   }
 
-  .rsvp-step {
-    display: none;
+  .rsvp-toggle {
+    display: flex;
+    margin-bottom: 0.5rem;
   }
 
-  .rsvp-step.active {
-    display: block;
+  .toggle {
+    font-family: "EB Garamond", serif;
+    font-size: 0.9rem;
+    background: #fff;
+    color: #666;
+    border: 1px solid #ccc;
+    padding: 0.2rem 0.8rem;
+    cursor: pointer;
+    transition: none;
   }
 
-  .rsvp label {
-    display: block;
-    font-style: italic;
-    margin-bottom: 0.3rem;
+  .toggle + .toggle {
+    border-left: none;
   }
 
-  .rsvp input[type="email"],
-  .rsvp input[type="text"] {
+  .toggle.active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+  }
+
+  .rsvp input {
     font-family: "EB Garamond", serif;
     font-size: 0.95rem;
     border: 1px solid #ccc;
@@ -101,13 +113,21 @@
     box-sizing: border-box;
     outline: none;
     background: #fff;
+    margin-bottom: 0.3rem;
   }
 
   .rsvp input:focus {
     border-color: #000;
   }
 
-  .rsvp button {
+  .rsvp-error {
+    color: #c00;
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+    min-height: 1.1em;
+  }
+
+  #rsvp-submit {
     font-family: "EB Garamond", serif;
     font-size: 0.95rem;
     background: #000;
@@ -115,30 +135,20 @@
     border: none;
     padding: 0.3rem 1rem;
     cursor: pointer;
-    margin-top: 0.6rem;
   }
 
-  .rsvp button:hover {
+  #rsvp-submit:hover {
     background: #333;
   }
 
-  .rsvp-hint {
-    font-size: 0.85rem;
-    color: #888;
-    margin-top: 0.4rem;
-  }
-
-  .rsvp-error {
-    color: #c00;
-    font-size: 0.85rem;
-    margin-top: 0.4rem;
-    display: none;
+  #rsvp-submit:disabled {
+    opacity: 0.5;
+    cursor: default;
   }
 
   .rsvp-success {
     font-style: italic;
   }
-
 </style>
 </head>
 <body>
@@ -156,103 +166,75 @@
 
 <div class="program">
   <div class="program-section">
-    <span class="program-label">Film</span>
-    <span class="program-item"><em>The Last Meridian</em> — dir. Camille Droit, 2024, 27 min</span>
-  </div>
-  <div class="program-section">
-    <span class="program-label">Music</span>
-    <span class="program-item">Feral Static</span>
-    <span class="program-item">DJ Westbrook</span>
-  </div>
-  <div class="program-section">
-    <span class="program-label">Artists &amp; Vendors</span>
-    <span class="program-item">Half-Light Studio — screen prints</span>
-    <span class="program-item">Still Life Goods — candles</span>
-  </div>
-  <div class="program-section">
-    <span class="program-label">Food</span>
-    <span class="program-item">Jerk chicken</span>
-    <span class="program-item">Sorrel</span>
+    <span class="program-label">Lineup</span>
+    <span class="program-item">TBA</span>
   </div>
 </div>
 
 <div class="rsvp">
-  <!-- Step 1: enter email -->
-  <div class="rsvp-step active" id="step-email">
-    <label for="rsvp-email">RSVP — enter your email</label>
-    <input type="email" id="rsvp-email" placeholder="you@example.com" autocomplete="email">
-    <div class="rsvp-error" id="email-error">Please enter a valid email address.</div>
-    <button onclick="submitEmail()">Send code →</button>
+  <div id="rsvp-form">
+    <div class="rsvp-toggle">
+      <button id="btn-email" class="toggle active" onclick="setType('email')">Email</button><!--
+      --><button id="btn-phone" class="toggle" onclick="setType('phone')">Phone</button>
+    </div>
+    <input type="email" id="rsvp-val" placeholder="you@example.com" autocomplete="email">
+    <div class="rsvp-error" id="rsvp-error"></div>
+    <button id="rsvp-submit" onclick="submitRsvp()">RSVP →</button>
   </div>
-
-  <!-- Step 2: confirm 6-digit code -->
-  <div class="rsvp-step" id="step-code">
-    <label for="rsvp-code">Enter the 6-digit code sent to your email</label>
-    <input type="text" id="rsvp-code" placeholder="000000" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
-    <div class="rsvp-error" id="code-error">Incorrect code. Please try again.</div>
-    <button onclick="submitCode()">Confirm →</button>
-    <div class="rsvp-hint">Didn't get it? <span style="cursor:pointer;text-decoration:underline" onclick="resendCode()">Resend</span></div>
-  </div>
-
-  <!-- Step 3: confirmed -->
-  <div class="rsvp-step" id="step-done">
-    <p class="rsvp-success">You're on the list. See you August 22.</p>
-  </div>
+  <p class="rsvp-success" id="rsvp-done" style="display:none">You're on the list.</p>
 </div>
 
 <script>
-  let pendingEmail = '';
+var rsvpType = 'email';
 
-  function showStep(id) {
-    document.querySelectorAll('.rsvp-step').forEach(el => el.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-  }
+function setType(t) {
+  rsvpType = t;
+  var inp = document.getElementById('rsvp-val');
+  inp.type = t === 'email' ? 'email' : 'tel';
+  inp.placeholder = t === 'email' ? 'you@example.com' : '+1 (212) 555-0100';
+  inp.autocomplete = t === 'email' ? 'email' : 'tel';
+  inp.value = '';
+  document.getElementById('rsvp-error').textContent = '';
+  document.getElementById('btn-email').className = 'toggle' + (t === 'email' ? ' active' : '');
+  document.getElementById('btn-phone').className = 'toggle' + (t === 'phone' ? ' active' : '');
+}
 
-  function showError(id, show) {
-    document.getElementById(id).style.display = show ? 'block' : 'none';
-  }
+async function submitRsvp() {
+  var val = document.getElementById('rsvp-val').value.trim();
+  var err = document.getElementById('rsvp-error');
+  err.textContent = '';
 
-  async function submitEmail() {
-    const email = document.getElementById('rsvp-email').value.trim();
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      showError('email-error', true);
+  if (rsvpType === 'email') {
+    if (!val || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+      err.textContent = 'Please enter a valid email address.';
       return;
     }
-    showError('email-error', false);
-    pendingEmail = email;
+  } else {
+    if (val.replace(/\D/g, '').length < 7) {
+      err.textContent = 'Please enter a valid phone number.';
+      return;
+    }
+  }
 
-    /* TODO: replace with real endpoint
-    await fetch('/api/rsvp/send-code', {
+  var btn = document.getElementById('rsvp-submit');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    var res = await fetch('/api/rsvp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, event: 'nitrate-iv' })
+      body: JSON.stringify({ event: 'nitrate-iv', type: rsvpType, value: val })
     });
-    */
-
-    showStep('step-code');
+    if (!res.ok) throw new Error();
+    document.getElementById('rsvp-form').style.display = 'none';
+    document.getElementById('rsvp-done').style.display = 'block';
+  } catch (e) {
+    err.textContent = 'Something went wrong. Please try again.';
+    btn.disabled = false;
+    btn.textContent = 'RSVP →';
   }
-
-  async function submitCode() {
-    const code = document.getElementById('rsvp-code').value.trim();
-    if (code.length !== 6) { showError('code-error', true); return; }
-    showError('code-error', false);
-
-    /* TODO: replace with real endpoint
-    const res = await fetch('/api/rsvp/verify-code', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: pendingEmail, code, event: 'nitrate-iv' })
-    });
-    if (!res.ok) { showError('code-error', true); return; }
-    */
-
-    showStep('step-done');
-  }
-
-  async function resendCode() {
-    await submitEmail();
-    showStep('step-code');
-  }
+}
 </script>
 
 </body>

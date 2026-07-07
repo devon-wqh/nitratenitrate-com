@@ -5,6 +5,8 @@
 // - "Visits" = distinct daily visitor hashes (SHA-256 of ip+ua+date); no
 //   cookies and no raw IPs are stored.
 // - /stats?key=... renders an all-time dashboard (key is a Worker secret).
+// - /api/rsvp (POST) records an email or phone RSVP and forwards to Google
+//   Sheets via RSVP_SHEET_URL (a Worker secret pointing at an Apps Script).
 
 const REDIRECTS = {
   "/go/tickets-iii":
@@ -23,6 +25,11 @@ async function ensureSchema(env) {
     ),
     env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_events_type ON events(type)"),
     env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_events_ts ON events(ts)"),
+    env.DB.prepare(
+      "CREATE TABLE IF NOT EXISTS rsvps (" +
+        "id INTEGER PRIMARY KEY, ts INTEGER NOT NULL, event TEXT NOT NULL, " +
+        "type TEXT NOT NULL, value TEXT NOT NULL)"
+    ),
   ]);
   schemaReady = true;
 }
@@ -65,6 +72,47 @@ function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 }
 
+function jsonRes(obj, status = 200) {
+  return new Response(JSON.stringify(obj), {
+    status,
+    headers: { "content-type": "application/json" },
+  });
+}
+
+async function handleRsvp(env, request, ctx) {
+  let body;
+  try { body = await request.json(); } catch { return jsonRes({ error: "Invalid request" }, 400); }
+
+  const { event = "nitrate-iv", type, value } = body;
+  if (!["email", "phone"].includes(type) || typeof value !== "string") {
+    return jsonRes({ error: "Invalid input" }, 400);
+  }
+  const v = value.trim().slice(0, 200);
+  if (!v) return jsonRes({ error: "Invalid input" }, 400);
+
+  try {
+    await ensureSchema(env);
+    await env.DB.prepare("INSERT INTO rsvps (ts, event, type, value) VALUES (?, ?, ?, ?)")
+      .bind(Date.now(), String(event).slice(0, 50), type, v)
+      .run();
+  } catch (e) {
+    return jsonRes({ error: "Server error" }, 500);
+  }
+
+  // Forward to Google Sheet (non-blocking; fails silently if URL not set)
+  if (env.RSVP_SHEET_URL) {
+    ctx.waitUntil(
+      fetch(env.RSVP_SHEET_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event, type, value: v, timestamp: new Date().toISOString() }),
+      }).catch(() => {})
+    );
+  }
+
+  return jsonRes({ ok: true });
+}
+
 async function statsPage(env, url) {
   const key = url.searchParams.get("key") || "";
   if (!env.STATS_KEY || key !== env.STATS_KEY) {
@@ -81,11 +129,15 @@ async function statsPage(env, url) {
     return (await stmt.first("n")) ?? 0;
   };
 
-  const [views, visits, clicks, hourlyRaw, dailyRaw, topPages, clickRows, countries] =
+  const [views, visits, clicks, tenMinRaw, hourlyRaw, dailyRaw, topPages, clickRows, countries] =
     await Promise.all([
       one("SELECT count(*) AS n FROM events WHERE type='view'"),
       one("SELECT count(DISTINCT visitor) AS n FROM events"),
       one("SELECT count(*) AS n FROM events WHERE type='click'"),
+      env.DB.prepare(
+        "SELECT CAST(ts/600000 AS INTEGER) AS bucket, count(*) AS n " +
+        "FROM events WHERE type='view' AND ts>? GROUP BY bucket ORDER BY bucket"
+      ).bind(now - 72e5).all(),
       env.DB.prepare(
         "SELECT CAST(ts/3600000 AS INTEGER) AS bucket, count(*) AS n " +
         "FROM events WHERE type='view' AND ts>? GROUP BY bucket ORDER BY bucket"
@@ -122,6 +174,13 @@ async function statsPage(env, url) {
   }));
 
   // Fill sparse DB results into complete arrays (zeros for missing buckets)
+  const now10min = Math.floor(now / 600000);
+  const tenMinMap = Object.fromEntries(tenMinRaw.results.map((r) => [r.bucket, r.n]));
+  const tenMinFilled = Array.from({ length: 12 }, (_, i) => {
+    const b = now10min - 11 + i;
+    return { bucket: b, n: tenMinMap[b] || 0 };
+  });
+
   const hourMap = Object.fromEntries(hourlyRaw.results.map((r) => [r.bucket, r.n]));
   const hourlyFilled = Array.from({ length: 24 }, (_, i) => {
     const b = nowHour - 23 + i;
@@ -134,7 +193,7 @@ async function statsPage(env, url) {
     return { bucket: b, n: dayMap[b] || 0 };
   });
 
-  const chartJson = JSON.stringify({ hourly: hourlyFilled, daily: dailyFilled });
+  const chartJson = JSON.stringify({ tenMin: tenMinFilled, hourly: hourlyFilled, daily: dailyFilled });
 
   // HTML helpers
   const rankRows = (results, col) =>
@@ -191,6 +250,7 @@ async function statsPage(env, url) {
 <h2>Trending</h2>
 <div class="controls">
   <select id="periodSel">
+    <option value="2h">Last 2 hours</option>
     <option value="1d">Last 24 hours</option>
     <option value="3d">Last 3 days</option>
     <option value="7d" selected>Last 7 days</option>
@@ -242,6 +302,7 @@ var baseOpts = {
   }
 };
 
+function mLabel(b) { return new Date(b * 600000).toLocaleTimeString([], { hour: "numeric", minute: "2-digit", hour12: true }); }
 function hLabel(b) { return new Date(b * 3600000).toLocaleTimeString([], { hour: "numeric", hour12: true }); }
 function dLabel(b) { return new Date(b * 86400000 + 43200000).toLocaleDateString([], { month: "short", day: "numeric" }); }
 
@@ -250,6 +311,10 @@ var periodChart = null;
 var curType = "line";
 
 function periodData(sel) {
+  if (sel === "2h") return {
+    labels: DATA.tenMin.map(function(d) { return mLabel(d.bucket); }),
+    vals: DATA.tenMin.map(function(d) { return d.n; })
+  };
   if (sel === "1d") return {
     labels: DATA.hourly.map(function(d) { return hLabel(d.bucket); }),
     vals: DATA.hourly.map(function(d) { return d.n; })
@@ -304,6 +369,11 @@ export default {
     if (dest) {
       ctx.waitUntil(logEvent(env, request, "click", url.pathname.slice("/go/".length)));
       return Response.redirect(dest, 302);
+    }
+
+    // RSVP form submissions.
+    if (url.pathname === "/api/rsvp" && request.method === "POST") {
+      return handleRsvp(env, request, ctx);
     }
 
     // Private stats dashboard.
