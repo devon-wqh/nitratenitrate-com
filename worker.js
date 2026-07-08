@@ -129,7 +129,7 @@ async function statsPage(env, url) {
     return (await stmt.first("n")) ?? 0;
   };
 
-  const [views, visits, clicks, tenMinRaw, hourlyRaw, dailyRaw, topPages, clickRows, countries] =
+  const [views, visits, clicks, tenMinRaw, hourlyRaw, dailyRaw, topPages, clickRows, countries, rsvpRows] =
     await Promise.all([
       one("SELECT count(*) AS n FROM events WHERE type='view'"),
       one("SELECT count(DISTINCT visitor) AS n FROM events"),
@@ -154,6 +154,9 @@ async function statsPage(env, url) {
       ).all(),
       env.DB.prepare(
         "SELECT country, count(*) AS n FROM events WHERE type='view' AND country<>'' GROUP BY country ORDER BY n DESC LIMIT 15"
+      ).all(),
+      env.DB.prepare(
+        "SELECT ts, event, type, value FROM rsvps ORDER BY ts DESC LIMIT 200"
       ).all(),
     ]);
 
@@ -285,6 +288,18 @@ async function statsPage(env, url) {
 <table>
   <tr><th></th><th>Country</th><th class="num">Views</th></tr>
   ${rankRows(countries.results, "country")}
+</table>
+
+<h2>RSVPs</h2>
+<table>
+  <tr><th>Date</th><th>Event</th><th>Type</th><th>Contact</th></tr>
+  ${rsvpRows.results.length
+    ? rsvpRows.results.map(r => {
+        const d = new Date(r.ts).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" });
+        return `<tr><td style="color:#999;white-space:nowrap">${d}</td><td>${esc(r.event)}</td><td>${esc(r.type)}</td><td>${esc(r.value)}</td></tr>`;
+      }).join("")
+    : `<tr><td colspan="4" style="color:#999">no RSVPs yet</td></tr>`
+  }
 </table>
 
 <p style="margin-top:2rem;color:#999;font-size:.8rem">Visits = unique visitors per day (no cookies, no IPs stored). Times shown in your local timezone.</p>
