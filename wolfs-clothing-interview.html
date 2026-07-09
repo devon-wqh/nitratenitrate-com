@@ -68,6 +68,21 @@
     display: block;
   }
 
+  .watch-btn {
+    display: inline-block;
+    background: blue;
+    color: #fff;
+    padding: 0.3rem 1rem;
+    text-decoration: none;
+    margin: 0.5rem 0 1.5rem 0;
+  }
+
+  .watch-btn:hover {
+    background: #0000cc;
+    color: #fff;
+    text-decoration: none;
+  }
+
   .nav {
     display: flex;
     justify-content: space-between;
@@ -89,7 +104,8 @@
 <br>
 
 <h1><strong>Your Local Zine Artist and Her Sheepish Werewolf Short</strong></h1>
-<div class="links"><p><i>Tori Frank interviews Shannon Ross about "Wolf's Clothing"</i><br><a href="/wolfs-clothing-film.html">Watch the film →</a></p></div>
+<p class="byline"><i>Tori Frank interviews Shannon Ross about "Wolf's Clothing"</i></p>
+<a href="/wolfs-clothing-film.html" class="watch-btn">Watch the film →</a>
 
 
 <p><em>Wolf's Clothes</em> is a 35 second animated short created by Shannon Ross that I would happily watch repeatedly on a loop. Actually, Shannon initially animated her cartoon so that it could be looped, which would be useful for an Instagram reel but not so much for the big-screen. I much prefer the latter. Thankfully, <em>Wolf's Clothes</em> is opening the first edition of Nitrate this Saturday, May 16. Shannon and I discussed frame-by-frame animation and the merits of a silly lil thang.</p>
@@ -156,6 +172,23 @@
 
 <p>I'm trying to be good at keeping myself in check in that way. I've been taking a very long break from Instagram, and it's been really nice.</p>
 
-<div class="links"><p><i>Interview and article by Tori Frank</i><br><a href="/wolfs-clothing-film.html">Watch the film →</a></p></div>
+
+<footer style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid #000;">
+  <span style="font-style:italic;color:#888;font-size:0.85rem;">Stay in touch with Nitrate</span><br>
+  <form id="signup" style="margin-top:0.5rem;">
+    <input type="email" name="email" placeholder="email" required style="font-family: inherit; font-size: inherit; border: none; border-bottom: 1px solid #000; outline: none; background: transparent; width: 200px;">
+    <button type="submit" style="font-family: inherit; font-size: inherit; background: none; border: none; cursor: pointer; padding-left: 0.5rem;">subscribe</button>
+  </form>
+</footer>
+
+<script>
+  document.getElementById("signup").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const email = this.email.value;
+    await fetch("https://script.google.com/macros/s/AKfycbxFOfrZMOJkfmhgl-s7SUr6rl-Ge84j3iyQLnL5poMifdsIUVV-anM9jk8UvtGKVNyf/exec", { method: "POST", body: new URLSearchParams({ email }) });
+    this.reset();
+    this.innerHTML = "done.";
+  });
+</script>
 </body>
 </html>

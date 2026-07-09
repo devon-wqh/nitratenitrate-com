@@ -59,6 +59,21 @@
   strong {
     font-weight: 700;
   }
+
+  .watch-btn {
+    display: inline-block;
+    background: blue;
+    color: #fff;
+    padding: 0.3rem 1rem;
+    text-decoration: none;
+    margin: 0.5rem 0 1.5rem 0;
+  }
+
+  .watch-btn:hover {
+    background: #0000cc;
+    color: #fff;
+    text-decoration: none;
+  }
 </style>
 </head>
 <body>
@@ -67,6 +82,7 @@
 <br>
 <h1><strong>A Forray into Directing Through the Mundane Topic of Arachnophilia</strong></h1>
 <p class="byline">Interview and article by Tori Frank</p>
+<a href="/spider-film.html" class="watch-btn">Watch the film →</a>
 
 <p><em>Spider</em>, a short film by Cate Christiansen starring Leandro McPhee, is about a guy who jerks off to spiders. Obviously. When I met Cate at Mora cafe in Williamsburg to talk about the film, I was buzzing off of a latte on a rainy day in May. I had questions, and she had answers.</p>
 
@@ -150,5 +166,23 @@
 
 <p>I have read all of the Letterbox reviews. There's one that stuck in my head that was like, <em>I don't know why everyone in the audience was laughing. I found this deeply sad.</em> I think that summarizes the film pretty well.</p>
 
+
+<footer style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid #000;">
+  <span style="font-style:italic;color:#888;font-size:0.85rem;">Stay in touch with Nitrate</span><br>
+  <form id="signup" style="margin-top:0.5rem;">
+    <input type="email" name="email" placeholder="email" required style="font-family: inherit; font-size: inherit; border: none; border-bottom: 1px solid #000; outline: none; background: transparent; width: 200px;">
+    <button type="submit" style="font-family: inherit; font-size: inherit; background: none; border: none; cursor: pointer; padding-left: 0.5rem;">subscribe</button>
+  </form>
+</footer>
+
+<script>
+  document.getElementById("signup").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const email = this.email.value;
+    await fetch("https://script.google.com/macros/s/AKfycbxFOfrZMOJkfmhgl-s7SUr6rl-Ge84j3iyQLnL5poMifdsIUVV-anM9jk8UvtGKVNyf/exec", { method: "POST", body: new URLSearchParams({ email }) });
+    this.reset();
+    this.innerHTML = "done.";
+  });
+</script>
 </body>
 </html>

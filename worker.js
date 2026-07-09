@@ -65,7 +65,15 @@ async function logEvent(env, request, type, path) {
 
 function isPageView(url) {
   const p = url.pathname;
-  return p === "/" || p.endsWith(".html");
+  if (p === "/") return true;
+  if (p.startsWith("/api/") || p.startsWith("/go/") || p === "/stats") return false;
+  if (p.endsWith(".html")) return true;
+  // Cloudflare's static-assets binding redirects "/foo.html" to the clean
+  // "/foo" as canonical, so shared/bookmarked links end up extensionless.
+  // Treat any path with no file extension as a page view too, so that
+  // traffic doesn't silently go uncounted.
+  const lastSegment = p.slice(p.lastIndexOf("/") + 1);
+  return !lastSegment.includes(".");
 }
 
 function esc(s) {

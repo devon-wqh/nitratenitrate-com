@@ -241,5 +241,23 @@ async function submitRsvp() {
 }
 </script>
 
+
+<footer style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid #000;">
+  <span style="font-style:italic;color:#888;font-size:0.85rem;">Stay in touch with Nitrate</span><br>
+  <form id="signup" style="margin-top:0.5rem;">
+    <input type="email" name="email" placeholder="email" required style="font-family: inherit; font-size: inherit; border: none; border-bottom: 1px solid #000; outline: none; background: transparent; width: 200px;">
+    <button type="submit" style="font-family: inherit; font-size: inherit; background: none; border: none; cursor: pointer; padding-left: 0.5rem;">subscribe</button>
+  </form>
+</footer>
+
+<script>
+  document.getElementById("signup").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const email = this.email.value;
+    await fetch("https://script.google.com/macros/s/AKfycbxFOfrZMOJkfmhgl-s7SUr6rl-Ge84j3iyQLnL5poMifdsIUVV-anM9jk8UvtGKVNyf/exec", { method: "POST", body: new URLSearchParams({ email }) });
+    this.reset();
+    this.innerHTML = "done.";
+  });
+</script>
 </body>
 </html>

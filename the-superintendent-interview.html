@@ -59,6 +59,21 @@
   strong {
     font-weight: 700;
   }
+
+  .watch-btn {
+    display: inline-block;
+    background: blue;
+    color: #fff;
+    padding: 0.3rem 1rem;
+    text-decoration: none;
+    margin: 0.5rem 0 1.5rem 0;
+  }
+
+  .watch-btn:hover {
+    background: #0000cc;
+    color: #fff;
+    text-decoration: none;
+  }
 </style>
 </head>
 <body>
@@ -67,6 +82,7 @@
 <br>
 <h1><strong>What Does Your Super Think About All Day Long?</strong></h1>
 <p class="byline">Interview and article by Devon Tayman</p>
+<a href="/the-superintendent-film.html" class="watch-btn">Watch the film →</a>
 
 <p>Evan Dominguez is the writer, director, and main character in his film <em>The Superintendent</em>. We met for a conversation at Halyard's on 3rd Avenue and 6th Street in Brooklyn, but the music was too loud to properly record the interview, so we opted for a spot on a bench overlooking the Gowanus canal. Nitrate will screen <em>The Superintendent</em> on May 16.</p>
 
@@ -134,5 +150,23 @@
 
 <p>I really hate to forcefeed things, but there we go. I hope people care less about the leak and the romance, and more about the soul struggling just to hear its own voice.</p>
 
+
+<footer style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid #000;">
+  <span style="font-style:italic;color:#888;font-size:0.85rem;">Stay in touch with Nitrate</span><br>
+  <form id="signup" style="margin-top:0.5rem;">
+    <input type="email" name="email" placeholder="email" required style="font-family: inherit; font-size: inherit; border: none; border-bottom: 1px solid #000; outline: none; background: transparent; width: 200px;">
+    <button type="submit" style="font-family: inherit; font-size: inherit; background: none; border: none; cursor: pointer; padding-left: 0.5rem;">subscribe</button>
+  </form>
+</footer>
+
+<script>
+  document.getElementById("signup").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const email = this.email.value;
+    await fetch("https://script.google.com/macros/s/AKfycbxFOfrZMOJkfmhgl-s7SUr6rl-Ge84j3iyQLnL5poMifdsIUVV-anM9jk8UvtGKVNyf/exec", { method: "POST", body: new URLSearchParams({ email }) });
+    this.reset();
+    this.innerHTML = "done.";
+  });
+</script>
 </body>
 </html>
