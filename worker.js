@@ -63,6 +63,14 @@ async function logEvent(env, request, type, path) {
   }
 }
 
+function normalizePath(p) {
+  // "/foo.html" and "/foo" are the same page (Cloudflare's static-assets
+  // binding treats the extensionless form as canonical) — store one path
+  // per page so "Top pages" doesn't split a page's views in two.
+  if (p.endsWith(".html")) p = p.slice(0, -5);
+  return p === "/index" ? "/" : p;
+}
+
 function isPageView(url) {
   const p = url.pathname;
   if (p === "/") return true;
@@ -121,11 +129,7 @@ async function handleRsvp(env, request, ctx) {
   return jsonRes({ ok: true });
 }
 
-async function statsPage(env, url) {
-  const key = url.searchParams.get("key") || "";
-  if (!env.STATS_KEY || key !== env.STATS_KEY) {
-    return new Response("Not found", { status: 404 });
-  }
+async function computeStats(env) {
   await ensureSchema(env);
 
   const now = Date.now();
@@ -137,7 +141,7 @@ async function statsPage(env, url) {
     return (await stmt.first("n")) ?? 0;
   };
 
-  const [views, visits, clicks, tenMinRaw, hourlyRaw, dailyRaw, topPages, clickRows, countries, rsvpRows] =
+  const [views, visits, clicks, tenMinRaw, hourlyRaw, dailyRaw, topPages, clickRows, countries] =
     await Promise.all([
       one("SELECT count(*) AS n FROM events WHERE type='view'"),
       one("SELECT count(DISTINCT visitor) AS n FROM events"),
@@ -162,9 +166,6 @@ async function statsPage(env, url) {
       ).all(),
       env.DB.prepare(
         "SELECT country, count(*) AS n FROM events WHERE type='view' AND country<>'' GROUP BY country ORDER BY n DESC LIMIT 15"
-      ).all(),
-      env.DB.prepare(
-        "SELECT ts, event, type, value FROM rsvps ORDER BY ts DESC LIMIT 200"
       ).all(),
     ]);
 
@@ -206,7 +207,6 @@ async function statsPage(env, url) {
 
   const chartJson = JSON.stringify({ tenMin: tenMinFilled, hourly: hourlyFilled, daily: dailyFilled });
 
-  // HTML helpers
   const rankRows = (results, col) =>
     results.length
       ? results.map((r, i) =>
@@ -219,43 +219,22 @@ async function statsPage(env, url) {
       `<tr><td>${label}</td><td class="num">${v}</td><td class="num">${u}</td><td class="num">${c}</td></tr>`
     ).join("");
 
-  const html = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="robots" content="noindex">
-<title>Nitrate — stats</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"><\/script>
-<style>
-  body{font-family:"EB Garamond",Georgia,serif;margin:2rem;max-width:720px;color:#000;background:#fff}
-  h1{font-size:1.4rem;margin-bottom:.5rem}
-  h2{font-size:1rem;margin-top:2rem;border-bottom:1px solid #000;padding-bottom:.2rem;margin-bottom:.75rem}
-  .totals{display:flex;gap:2.5rem;margin:1rem 0 1.5rem}
-  .totals div{font-size:.85rem;color:#555}
-  .totals b{display:block;font-size:1.8rem;color:#000;line-height:1.2}
-  .controls{display:flex;align-items:center;gap:1rem;margin-bottom:.75rem}
-  select{font-family:inherit;font-size:.85rem;border:1px solid #ccc;padding:.2rem .5rem;background:#fff;cursor:pointer}
-  .toggle{display:flex}
-  .toggle button{font-family:inherit;font-size:.85rem;border:1px solid #ccc;padding:.2rem .7rem;background:#fff;cursor:pointer}
-  .toggle button+button{border-left:none}
-  .toggle button.active{background:#000;color:#fff;border-color:#000}
-  canvas{max-height:180px;width:100%!important}
-  table{border-collapse:collapse;width:100%;font-size:.9rem}
-  th{text-align:left;font-weight:normal;font-style:italic;padding:.2rem .4rem;border-bottom:1px solid #000}
-  th.num{text-align:right}
-  td{padding:.2rem .4rem;border-bottom:1px solid #eee}
-  td.rank{color:#bbb;width:1.5rem}
-  td.num{text-align:right;width:4rem}
-</style>
-</head>
-<body>
-<h1>Nitrate — stats</h1>
+  return {
+    views, visits, clicks, chartJson, periodRowsHtml,
+    topPagesHtml: rankRows(topPages.results, "path"),
+    clickRowsHtml: rankRows(clickRows.results, "path"),
+    countriesHtml: rankRows(countries.results, "country"),
+  };
+}
+
+function statsBodyHtml(s, title) {
+  return `<h1>${title}</h1>
 
 <h2>All time</h2>
 <div class="totals">
-  <div>Views<b>${views}</b></div>
-  <div>Visits<b>${visits}</b></div>
-  <div>Ticket clicks<b>${clicks}</b></div>
+  <div>Views<b>${s.views}</b></div>
+  <div>Visits<b>${s.visits}</b></div>
+  <div>Ticket clicks<b>${s.clicks}</b></div>
 </div>
 
 <h2>Trending</h2>
@@ -277,42 +256,30 @@ async function statsPage(env, url) {
 <h2>Trailing periods</h2>
 <table>
   <tr><th>Period</th><th class="num">Views</th><th class="num">Visits</th><th class="num">Clicks</th></tr>
-  ${periodRowsHtml}
+  ${s.periodRowsHtml}
 </table>
 
 <h2>Top pages</h2>
 <table>
   <tr><th></th><th>Page</th><th class="num">Views</th></tr>
-  ${rankRows(topPages.results, "path")}
+  ${s.topPagesHtml}
 </table>
 
 <h2>Ticket clicks</h2>
 <table>
   <tr><th></th><th>Link</th><th class="num">Clicks</th></tr>
-  ${rankRows(clickRows.results, "path")}
+  ${s.clickRowsHtml}
 </table>
 
 <h2>Top countries</h2>
 <table>
   <tr><th></th><th>Country</th><th class="num">Views</th></tr>
-  ${rankRows(countries.results, "country")}
-</table>
+  ${s.countriesHtml}
+</table>`;
+}
 
-<h2>RSVPs</h2>
-<table>
-  <tr><th>Date</th><th>Event</th><th>Type</th><th>Contact</th></tr>
-  ${rsvpRows.results.length
-    ? rsvpRows.results.map(r => {
-        const d = new Date(r.ts).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" });
-        return `<tr><td style="color:#999;white-space:nowrap">${d}</td><td>${esc(r.event)}</td><td>${esc(r.type)}</td><td>${esc(r.value)}</td></tr>`;
-      }).join("")
-    : `<tr><td colspan="4" style="color:#999">no RSVPs yet</td></tr>`
-  }
-</table>
-
-<p style="margin-top:2rem;color:#999;font-size:.8rem">Visits = unique visitors per day (no cookies, no IPs stored). Times shown in your local timezone.</p>
-
-<script>
+function statsChartScript(chartJson) {
+  return `<script>
 var DATA = ${chartJson};
 var ff = "'EB Garamond', Georgia, serif";
 var baseOpts = {
@@ -376,7 +343,101 @@ function setType(t) {
 
 document.getElementById("periodSel").addEventListener("change", function() { buildPeriod(this.value, curType); });
 buildPeriod("7d", "line");
-<\/script>
+<\/script>`;
+}
+
+const STATS_STYLE = `
+  body{font-family:"EB Garamond",Georgia,serif;margin:2rem;max-width:720px;color:#000;background:#fff}
+  h1{font-size:1.4rem;margin-bottom:.5rem}
+  h2{font-size:1rem;margin-top:2rem;border-bottom:1px solid #000;padding-bottom:.2rem;margin-bottom:.75rem}
+  .totals{display:flex;gap:2.5rem;margin:1rem 0 1.5rem}
+  .totals div{font-size:.85rem;color:#555}
+  .totals b{display:block;font-size:1.8rem;color:#000;line-height:1.2}
+  .controls{display:flex;align-items:center;gap:1rem;margin-bottom:.75rem}
+  select{font-family:inherit;font-size:.85rem;border:1px solid #ccc;padding:.2rem .5rem;background:#fff;cursor:pointer}
+  .toggle{display:flex}
+  .toggle button{font-family:inherit;font-size:.85rem;border:1px solid #ccc;padding:.2rem .7rem;background:#fff;cursor:pointer}
+  .toggle button+button{border-left:none}
+  .toggle button.active{background:#000;color:#fff;border-color:#000}
+  canvas{max-height:180px;width:100%!important}
+  table{border-collapse:collapse;width:100%;font-size:.9rem}
+  th{text-align:left;font-weight:normal;font-style:italic;padding:.2rem .4rem;border-bottom:1px solid #000}
+  th.num{text-align:right}
+  td{padding:.2rem .4rem;border-bottom:1px solid #eee}
+  td.rank{color:#bbb;width:1.5rem}
+  td.num{text-align:right;width:4rem}
+`;
+
+async function statsPage(env, url) {
+  const key = url.searchParams.get("key") || "";
+  if (!env.STATS_KEY || key !== env.STATS_KEY) {
+    return new Response("Not found", { status: 404 });
+  }
+
+  const s = await computeStats(env);
+
+  const rsvpRows = await env.DB.prepare(
+    "SELECT ts, event, type, value FROM rsvps ORDER BY ts DESC LIMIT 200"
+  ).all();
+
+  const rsvpTable = `<h2>RSVPs</h2>
+<table>
+  <tr><th>Date</th><th>Event</th><th>Type</th><th>Contact</th></tr>
+  ${rsvpRows.results.length
+    ? rsvpRows.results.map(r => {
+        const d = new Date(r.ts).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" });
+        return `<tr><td style="color:#999;white-space:nowrap">${d}</td><td>${esc(r.event)}</td><td>${esc(r.type)}</td><td>${esc(r.value)}</td></tr>`;
+      }).join("")
+    : `<tr><td colspan="4" style="color:#999">no RSVPs yet</td></tr>`
+  }
+</table>`;
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Nitrate — stats</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"><\/script>
+<style>${STATS_STYLE}</style>
+</head>
+<body>
+${statsBodyHtml(s, "Nitrate — stats")}
+
+${rsvpTable}
+
+<p style="margin-top:2rem;color:#999;font-size:.8rem">Visits = unique visitors per day (no cookies, no IPs stored). Times shown in your local timezone.</p>
+
+${statsChartScript(s.chartJson)}
+</body>
+</html>`;
+
+  return new Response(html, { headers: { "content-type": "text/html;charset=utf-8" } });
+}
+
+async function dashboardPage(env, url) {
+  const key = url.searchParams.get("key") || "";
+  if (!env.DASHBOARD_KEY || key !== env.DASHBOARD_KEY) {
+    return new Response("Not found", { status: 404 });
+  }
+
+  const s = await computeStats(env);
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Nitrate — dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"><\/script>
+<style>${STATS_STYLE}</style>
+</head>
+<body>
+${statsBodyHtml(s, "Nitrate")}
+
+<p style="margin-top:2rem;color:#999;font-size:.8rem">Visits = unique visitors per day (no cookies, no IPs stored). Times shown in your local timezone.</p>
+
+${statsChartScript(s.chartJson)}
 </body>
 </html>`;
 
@@ -399,14 +460,19 @@ export default {
       return handleRsvp(env, request, ctx);
     }
 
-    // Private stats dashboard.
+    // Private stats dashboard (full detail, including RSVP contacts).
     if (url.pathname === "/stats") {
       return statsPage(env, url);
     }
 
+    // Shareable dashboard (aggregate numbers only, no RSVP contacts).
+    if (url.pathname === "/dashboard") {
+      return dashboardPage(env, url);
+    }
+
     // Count page views (HTML only), then serve the static file.
     if (request.method === "GET" && isPageView(url)) {
-      ctx.waitUntil(logEvent(env, request, "view", url.pathname));
+      ctx.waitUntil(logEvent(env, request, "view", normalizePath(url.pathname)));
     }
     return env.ASSETS.fetch(request);
   },
