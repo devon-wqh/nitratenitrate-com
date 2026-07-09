@@ -77,7 +77,57 @@
     max-width: 280px;
   }
 
-  #ticket-buy {
+  .rsvp-toggle {
+    display: flex;
+    margin-bottom: 0.5rem;
+  }
+
+  .toggle {
+    font-family: "EB Garamond", serif;
+    font-size: 0.9rem;
+    background: #fff;
+    color: #666;
+    border: 1px solid #ccc;
+    padding: 0.2rem 0.8rem;
+    cursor: pointer;
+    transition: none;
+  }
+
+  .toggle + .toggle {
+    border-left: none;
+  }
+
+  .toggle.active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+  }
+
+  .rsvp input {
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    padding: 0.3rem 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+    background: #fff;
+    margin-bottom: 0.3rem;
+  }
+
+  .rsvp input:focus {
+    border-color: #000;
+  }
+
+  .rsvp-error {
+    color: #c00;
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+    min-height: 1.1em;
+  }
+
+  #rsvp-submit {
     font-family: "EB Garamond", serif;
     font-size: 0.95rem;
     background: #000;
@@ -87,20 +137,13 @@
     cursor: pointer;
   }
 
-  #ticket-buy:hover {
+  #rsvp-submit:hover {
     background: #333;
   }
 
-  #ticket-buy:disabled {
+  #rsvp-submit:disabled {
     opacity: 0.5;
     cursor: default;
-  }
-
-  .ticket-error {
-    color: #c00;
-    font-size: 0.85rem;
-    margin-top: 0.4rem;
-    min-height: 1.1em;
   }
 
   .rsvp-success {
@@ -119,7 +162,6 @@
   <div class="event-title">Nitrate iv</div>
   <div>August 1, 2026</div>
   <div class="event-address">Bed-Stuy, Brooklyn</div>
-  <div class="event-address">$5 at door</div>
 </div>
 
 <div class="program">
@@ -130,49 +172,71 @@
 </div>
 
 <div class="rsvp">
-  <div id="ticket-form">
-    <button id="ticket-buy" onclick="buyTicket()">Buy ticket — $5 →</button>
-    <div class="ticket-error" id="ticket-error"></div>
+  <div id="rsvp-form">
+    <div class="rsvp-toggle">
+      <button id="btn-email" class="toggle active" onclick="setType('email')">Email</button><!--
+      --><button id="btn-phone" class="toggle" onclick="setType('phone')">Phone</button>
+    </div>
+    <input type="email" id="rsvp-val" placeholder="you@example.com" autocomplete="email">
+    <div class="rsvp-error" id="rsvp-error"></div>
+    <button id="rsvp-submit" onclick="submitRsvp()">Sign up for updates →</button>
   </div>
-  <p class="rsvp-success" id="ticket-done" style="display:none">Ticket confirmed. August 1 · Bed-Stuy, Brooklyn.</p>
-  <p class="ticket-error" id="ticket-cancelled" style="display:none">Checkout cancelled — you can try again anytime.</p>
+  <p class="rsvp-success" id="rsvp-done" style="display:none">You're signed up — we'll email you when the date and venue are confirmed.</p>
 </div>
 
 <img src="fliers/nitrate-iv.png" alt="Nitrate iv flier" style="width:100%;display:block;margin-top:2rem;">
 
 <script>
-async function buyTicket() {
-  var btn = document.getElementById('ticket-buy');
-  var err = document.getElementById('ticket-error');
+var rsvpType = 'email';
+
+function setType(t) {
+  rsvpType = t;
+  var inp = document.getElementById('rsvp-val');
+  inp.type = t === 'email' ? 'email' : 'tel';
+  inp.placeholder = t === 'email' ? 'you@example.com' : '+1 (212) 555-0100';
+  inp.autocomplete = t === 'email' ? 'email' : 'tel';
+  inp.value = '';
+  document.getElementById('rsvp-error').textContent = '';
+  document.getElementById('btn-email').className = 'toggle' + (t === 'email' ? ' active' : '');
+  document.getElementById('btn-phone').className = 'toggle' + (t === 'phone' ? ' active' : '');
+}
+
+async function submitRsvp() {
+  var val = document.getElementById('rsvp-val').value.trim();
+  var err = document.getElementById('rsvp-error');
   err.textContent = '';
+
+  if (rsvpType === 'email') {
+    if (!val || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+      err.textContent = 'Please enter a valid email address.';
+      return;
+    }
+  } else {
+    if (val.replace(/\D/g, '').length < 7) {
+      err.textContent = 'Please enter a valid phone number.';
+      return;
+    }
+  }
+
+  var btn = document.getElementById('rsvp-submit');
   btn.disabled = true;
-  btn.textContent = 'Redirecting…';
+  btn.textContent = 'Sending…';
 
   try {
-    var res = await fetch('/api/checkout', {
+    var res = await fetch('/api/rsvp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ event: 'nitrate-iv' })
+      body: JSON.stringify({ event: 'nitrate-iv', type: rsvpType, value: val })
     });
-    var data = await res.json();
-    if (!res.ok || !data.url) throw new Error();
-    window.location.href = data.url;
+    if (!res.ok) throw new Error();
+    document.getElementById('rsvp-form').style.display = 'none';
+    document.getElementById('rsvp-done').style.display = 'block';
   } catch (e) {
     err.textContent = 'Something went wrong. Please try again.';
     btn.disabled = false;
-    btn.textContent = 'Buy ticket — $5 →';
+    btn.textContent = 'Sign up for updates →';
   }
 }
-
-(function () {
-  var status = new URLSearchParams(window.location.search).get('ticket');
-  if (status === 'success') {
-    document.getElementById('ticket-form').style.display = 'none';
-    document.getElementById('ticket-done').style.display = 'block';
-  } else if (status === 'cancelled') {
-    document.getElementById('ticket-cancelled').style.display = 'block';
-  }
-})();
 </script>
 
 </body>
