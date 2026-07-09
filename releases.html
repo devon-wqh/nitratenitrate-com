@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Releases — Nitrate</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 2rem;
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    background: #fff;
+    color: #000;
+    max-width: 1000px;
+  }
+
+  p {
+    margin: 0 0 1.5rem 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: blue;
+    text-decoration: underline;
+  }
+
+  .section-label {
+    font-style: italic;
+    border-bottom: 1px solid #000;
+    padding-bottom: 0.2rem;
+    margin: 2rem 0 0;
+  }
+
+  .release-row {
+    display: grid;
+    grid-template-columns: 190px 1fr 200px;
+    gap: 2.5rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid #ddd;
+    align-items: start;
+  }
+
+  .release-row:last-child {
+    border-bottom: none;
+  }
+
+  .release-name {
+    font-weight: 500;
+    margin-bottom: 0.1rem;
+  }
+
+  .release-date,
+  .release-type {
+    color: #555;
+  }
+
+  .release-credits {
+    display: block;
+  }
+
+  .release-poster {
+    width: 100%;
+    aspect-ratio: 27 / 40;
+    background: #efefef;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-style: italic;
+    color: #aaa;
+    font-size: 0.85rem;
+    text-decoration: none;
+    text-align: center;
+    padding: 0.5rem;
+    box-sizing: border-box;
+  }
+
+  .release-poster:hover {
+    border-color: #999;
+    text-decoration: none;
+  }
+
+  .release-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media (max-width: 720px) {
+    body { max-width: none; }
+    .release-row {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .release-poster {
+      max-width: 200px;
+    }
+  }
+
+  .poster-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.88);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    box-sizing: border-box;
+  }
+
+  .poster-modal.open {
+    display: flex;
+  }
+
+  .poster-modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    max-width: 90vw;
+    max-height: 90vh;
+  }
+
+  .poster-modal-content img {
+    max-width: 100%;
+    max-height: 78vh;
+    object-fit: contain;
+    display: block;
+  }
+
+  .poster-modal-btn {
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 0.4rem 1.2rem;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .poster-modal-btn:hover {
+    background: #ddd;
+    text-decoration: none;
+  }
+
+  .poster-modal-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+  }
+</style>
+</head>
+<body>
+
+<p><a href="/index.html"><strong>Nitrate</strong></a></p>
+
+<div class="section-label">Upcoming</div>
+
+<div class="release-row">
+  <div class="release-meta">
+    <div class="release-name"><a href="/spider-interview.html">Spider</a></div>
+    <div class="release-date">July 12, 2026, 12pm</div>
+    <div class="release-type">Watch online</div>
+  </div>
+  <div class="release-program">
+    <span class="release-credits">dir. Cate Christiansen</span>
+  </div>
+  <a href="#" class="release-poster" onclick="openPoster('posters/spider%20poster.jpg', '/spider-interview.html'); return false;"><img src="posters/spider%20poster.jpg" alt="Spider poster"></a>
+</div>
+
+<div class="poster-modal" id="poster-modal" onclick="if (event.target === this) closePoster();">
+  <span class="poster-modal-close" onclick="closePoster()">&times;</span>
+  <div class="poster-modal-content">
+    <img id="poster-modal-img" src="" alt="Poster">
+    <a id="poster-modal-link" href="#" class="poster-modal-btn">Read the article →</a>
+  </div>
+</div>
+
+<script>
+function openPoster(imgSrc, articleHref) {
+  document.getElementById('poster-modal-img').src = imgSrc;
+  document.getElementById('poster-modal-link').href = articleHref;
+  document.getElementById('poster-modal').classList.add('open');
+}
+
+function closePoster() {
+  document.getElementById('poster-modal').classList.remove('open');
+}
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') closePoster();
+});
+</script>
+
+</body>
+</html>

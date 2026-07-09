@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spider — Nitrate</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 2rem;
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    background: #fff;
+    color: #000;
+    max-width: 600px;
+  }
+
+  p {
+    margin: 0 0 1.5rem 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: blue;
+    text-decoration: underline;
+  }
+
+  .countdown {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    background: #efefef;
+    border: 1px solid #ccc;
+    padding: 1.5rem;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .countdown-label {
+    font-style: italic;
+    color: #aaa;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .countdown-timer {
+    display: flex;
+    justify-content: center;
+    gap: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .countdown-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .countdown-unit span {
+    font-size: 1.7rem;
+    line-height: 1;
+    font-style: italic;
+    color: #aaa;
+  }
+
+  .countdown-unit small {
+    color: #aaa;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.3rem;
+  }
+
+  .countdown-live {
+    font-style: italic;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .notify-form {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .notify-form input {
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    border: none;
+    border-bottom: 1px solid #000;
+    outline: none;
+    background: transparent;
+    padding: 0.2rem 0;
+    width: 200px;
+    text-align: center;
+  }
+
+  .notify-form button {
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 0.3rem 1rem;
+    cursor: pointer;
+  }
+
+  .notify-form button:hover {
+    background: #333;
+  }
+
+  .notify-form button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .notify-error {
+    color: #c00;
+    font-size: 0.85rem;
+    margin-top: 0.6rem;
+    min-height: 1.1em;
+  }
+
+  .notify-done {
+    font-style: italic;
+    color: #888;
+    margin: 0.6rem 0 0 0;
+  }
+
+  .film-title {
+    font-size: 0.95rem;
+    font-weight: 400;
+    font-style: italic;
+    margin: 0 0 0 0;
+  }
+
+  .film-director {
+    margin: 0 0 1.5rem 0;
+  }
+
+  .film-description {
+    margin: 0 0 1.5rem 0;
+  }
+
+  .credits {
+    margin: 0 0 1.5rem 0;
+  }
+
+  .credits-row {
+    display: flex;
+    gap: 1em;
+    line-height: 1.6;
+  }
+
+  .credits-role {
+    color: #888;
+    min-width: 11em;
+    flex-shrink: 0;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #000;
+    margin: 1.5rem 0;
+  }
+
+  .links {
+    margin: 0 0 1.5rem 0;
+  }
+
+  .links a {
+    display: block;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+  }
+
+  .nav a {
+    text-decoration: none;
+  }
+
+  .nav a:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+
+<p><a href="/index.html"><strong>Nitrate</strong></a></p>
+
+<div class="countdown">
+  <div class="countdown-label">Releasing online July 12 at 12:00pm EST</div>
+  <div class="countdown-timer" id="countdown-timer">
+    <div class="countdown-unit"><span id="cd-days">00</span><small>days</small></div>
+    <div class="countdown-unit"><span id="cd-hours">00</span><small>hrs</small></div>
+    <div class="countdown-unit"><span id="cd-mins">00</span><small>min</small></div>
+    <div class="countdown-unit"><span id="cd-secs">00</span><small>sec</small></div>
+  </div>
+  <div id="notify-form">
+    <div class="notify-form">
+      <input type="email" id="notify-email" placeholder="you@example.com" autocomplete="email">
+      <button id="notify-submit" onclick="notifyMe()">Notify me →</button>
+    </div>
+    <div class="notify-error" id="notify-error"></div>
+  </div>
+  <p class="notify-done" id="notify-done" style="display:none">You'll get an email when it's live.</p>
+</div>
+
+<p class="film-title">Spider</p>
+<p class="film-director">Cate Christiansen</p>
+
+<p class="film-description">A teenage flautist finds refuge from his father's controlling expectations by exploring sexual arachnophilia.</p>
+
+<div class="credits">
+  <div class="credits-row"><span class="credits-role">Written, Directed by</span><span>Cate Christiansen</span></div>
+  <div class="credits-row"><span class="credits-role">Starring</span><span>Leandro McPhee, Jonathan Dauermann, Paula Kacher</span></div>
+  <div class="credits-row"><span class="credits-role">Director of Photography</span><span>Alexandra Mettler</span></div>
+  <div class="credits-row"><span class="credits-role">First Assistant Director</span><span>Elizaveta Dyachkova</span></div>
+  <div class="credits-row"><span class="credits-role">Script Supervisor</span><span>Halle Skye</span></div>
+  <div class="credits-row"><span class="credits-role">Co-Producer</span><span>Jessica Dimento</span></div>
+  <div class="credits-row"><span class="credits-role">Production Design</span><span>Madison Bambino</span></div>
+  <div class="credits-row"><span class="credits-role">Assistant Art Director</span><span>Ella Baker-Smith</span></div>
+  <div class="credits-row"><span class="credits-role">Gaffer</span><span>Liam Podos</span></div>
+  <div class="credits-row"><span class="credits-role">First Assistant Camera</span><span>Jacob Eschborn</span></div>
+  <div class="credits-row"><span class="credits-role">Key Grip</span><span>Jake Shoop</span></div>
+  <div class="credits-row"><span class="credits-role">Grip</span><span>Michael Monroe</span></div>
+  <div class="credits-row"><span class="credits-role">Music</span><span>Noam Rapoport</span></div>
+  <div class="credits-row"><span class="credits-role">Sound Mixer</span><span>Lucas Ikaika Manuel-Schiebe</span></div>
+  <div class="credits-row"><span class="credits-role">Foley Recording Engineer</span><span>Shay Burgman</span></div>
+</div>
+
+<hr class="divider">
+
+<div class="links">
+  <a href="/spider-interview.html">Read the interview →</a>
+</div>
+
+<div class="nav">
+  <a href="the-superintendent-film.html">← Previous film</a>
+  <a href="index.html">Next film →</a>
+</div>
+
+<script>
+var RELEASE_TIME = new Date("2026-07-12T12:00:00-04:00").getTime();
+
+function updateCountdown() {
+  var diff = RELEASE_TIME - Date.now();
+  if (diff <= 0) {
+    document.getElementById('countdown-timer').style.display = 'none';
+    document.getElementById('notify-form').style.display = 'none';
+    var live = document.createElement('p');
+    live.className = 'countdown-live';
+    live.textContent = "It's live.";
+    document.getElementById('countdown-timer').insertAdjacentElement('afterend', live);
+    clearInterval(countdownInterval);
+    return;
+  }
+  var pad = function (n) { return String(n).padStart(2, '0'); };
+  document.getElementById('cd-days').textContent = pad(Math.floor(diff / 86400000));
+  document.getElementById('cd-hours').textContent = pad(Math.floor((diff % 86400000) / 3600000));
+  document.getElementById('cd-mins').textContent = pad(Math.floor((diff % 3600000) / 60000));
+  document.getElementById('cd-secs').textContent = pad(Math.floor((diff % 60000) / 1000));
+}
+
+updateCountdown();
+var countdownInterval = setInterval(updateCountdown, 1000);
+
+async function notifyMe() {
+  var val = document.getElementById('notify-email').value.trim();
+  var err = document.getElementById('notify-error');
+  err.textContent = '';
+
+  if (!val || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+    err.textContent = 'Please enter a valid email address.';
+    return;
+  }
+
+  var btn = document.getElementById('notify-submit');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    var res = await fetch('/api/rsvp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event: 'spider', type: 'email', value: val })
+    });
+    if (!res.ok) throw new Error();
+    document.getElementById('notify-form').style.display = 'none';
+    document.getElementById('notify-done').style.display = 'block';
+  } catch (e) {
+    err.textContent = 'Something went wrong. Please try again.';
+    btn.disabled = false;
+    btn.textContent = 'Notify me →';
+  }
+}
+</script>
+
+</body>
+</html>

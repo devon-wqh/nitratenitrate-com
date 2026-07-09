@@ -22,6 +22,7 @@
   }
 
   a:hover {
+    color: blue;
     text-decoration: underline;
   }
 
@@ -44,14 +45,15 @@
   }
 
   .poster-image {
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 27 / 40;
     background: #fff;
     margin: 0.7rem;
   }
 
-  .poster-image canvas {
+  .poster-image img {
     width: 100%;
     height: 100%;
+    object-fit: cover;
     display: block;
   }
 
@@ -85,283 +87,20 @@
 <body>
 
 <div class="nav">
-  <a href="/index.html">Nitrate</a>
+  <a href="/index.html"><strong>Nitrate</strong></a>
 </div>
 
 <div class="grid">
 
   <div class="poster-card">
-    <div class="poster-image">
-      <canvas class="halftone-canvas" data-mode="black" data-src="https://img.youtube.com/vi/Z-jEHpA5jYA/hqdefault.jpg" data-sx="0" data-sy="45" data-sw="480" data-sh="270"></canvas>
-    </div>
-    <div class="poster-info">
-      <div class="poster-title">The Superintendent</div>
-      <div class="poster-credits">
-        starring. Evan Dominguez, Violette Trotter, Richard Vetere, Johnny O'Leary<br>
-        dir. Evan Dominguez<br>
-        cin. Molly Scotti<br>
-        score. Mickey Golden<br>
-        color. Kermis Batista
+    <a href="/spider-film.html">
+      <div class="poster-image">
+        <img src="posters/spider%20poster.jpg" alt="Spider poster">
       </div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image">
-      <canvas class="halftone-canvas" data-src="stills/chinatown-cowboy.jpg" data-sx="209" data-sy="0" data-sw="862" data-sh="485"></canvas>
-    </div>
+    </a>
     <div class="poster-info">
-      <div class="poster-title">Chinatown Cowboy</div>
-      <div class="poster-credits">
-        starring. Toluwalase Ojo, Jason Lai, Dominque Wong<br>
-        dir. Jaafar Al-Nabi<br>
-        cin. Sawyer Gaunt<br>
-        prod design. Arian Behpour<br>
-        casting. Violette Trotter
-      </div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image">
-      <canvas class="halftone-canvas" data-src="stills/baby-its-over.jpg" data-sx="152" data-sy="85" data-sw="976" data-sh="549"></canvas>
-    </div>
-    <div class="poster-info">
-      <div class="poster-title">Baby, It's Over</div>
-      <div class="poster-credits">
-        starring. Sabrina Teixeira-Santos, Corrine McLoughlin, Matthew Petrick<br>
-        dir. Moss Johnston<br>
-        cin. Esther Carlioz<br>
-        sound. Jamila Tejada<br>
-        edit. Moss Johnston
-      </div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image">
-      <canvas class="halftone-canvas" data-src="stills/lou-and-jane.jpg"></canvas>
-    </div>
-    <div class="poster-info">
-      <div class="poster-title">Lou and Jane</div>
-      <div class="poster-credits">
-        starring. Jonah Feingold, Alex Pouloutides<br>
-        dir. Darshan Patel
-      </div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image">
-      <canvas class="halftone-canvas" data-src="stills/dog.jpg" data-sx="320" data-sy="0" data-sw="960" data-sh="540"></canvas>
-    </div>
-    <div class="poster-info">
-      <div class="poster-title">DOG</div>
-      <div class="poster-credits">
-        starring. Alexis Felix, Nastasia Koulich, Alexander Carstoiu<br>
-        dir. Ben Tan<br>
-        cin. Jacob Bojsza<br>
-        score. Austin Feinstein<br>
-        casting. Violette Trotter
-      </div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image">
-      <canvas class="halftone-canvas" data-src="stills/fan-fiction.jpg"></canvas>
-    </div>
-    <div class="poster-info">
-      <div class="poster-title">Fan Fiction</div>
-      <div class="poster-credits">
-        starring. Zachary Zamsky, Lily McInerny<br>
-        dir. Ben Lederman<br>
-        cin. Ben Elias<br>
-        score. Jon Sewitz<br>
-        prod. Dave McVeigh Jr.
-      </div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image">
-      <canvas class="halftone-canvas" data-src="stills/darkroom.jpg" data-sx="150" data-sy="20" data-sw="980" data-sh="551"></canvas>
-    </div>
-    <div class="poster-info">
-      <div class="poster-title">Darkroom</div>
-      <div class="poster-credits">dir. Meag Cherry<br>13:47 · 2025</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image">
-      <canvas class="halftone-canvas" data-src="stills/lucky-lenny.jpg"></canvas>
-    </div>
-    <div class="poster-info">
-      <div class="poster-title">Lucky Lenny</div>
-      <div class="poster-credits">
-        starring. J. Jesse Harley, Winston Salk, Devin Beckwith<br>
-        dir. Jack Campise<br>
-        cin. Caleb Garrett<br>
-        score. Steph Jacqlin<br>
-        color. Ashton Thomas
-      </div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image">
-      <canvas class="halftone-canvas" data-src="stills/memories-of-mother.jpg" data-sx="57" data-sy="32" data-sw="1166" data-sh="656"></canvas>
-    </div>
-    <div class="poster-info">
-      <div class="poster-title">Memories of Mother</div>
-      <div class="poster-credits">dir. Lola Kenet<br>20:01 · 2024</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image">
-      <canvas class="halftone-canvas" data-src="stills/sunday-strips.jpg" data-sx="150" data-sy="84" data-sw="980" data-sh="551"></canvas>
-    </div>
-    <div class="poster-info">
-      <div class="poster-title">Sunday Strips</div>
-      <div class="poster-credits">dir. Devon Tayman<br>13:28 · 2025</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">Wolf's Clothing</div>
-      <div class="poster-credits">dir. Shannon Ross<br>2025</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">The Walls</div>
-      <div class="poster-credits">dir. Dakota Rodes<br>17:30 · 2025</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">Handball</div>
-      <div class="poster-credits">dir. Eli Beutel<br>8:45 · 2025</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">Killing Ground</div>
-      <div class="poster-credits">dir. Kevin V. Doan<br>15:52</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">Haircut</div>
-      <div class="poster-credits">dir. Gavin Edmonds<br>3:31</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">Spider</div>
+      <div class="poster-title"><a href="/spider-film.html">Spider</a></div>
       <div class="poster-credits">dir. Cate Christiansen</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">Vomit</div>
-      <div class="poster-credits">dir. Roi Cydulkin<br>16:20 · 2026<br>SXSW</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">Beautiful But Doomed Attempts at Conversation</div>
-      <div class="poster-credits">dir. Leeban Farah</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">Sundays Children</div>
-      <div class="poster-credits">dir. Reuben Hamlyn<br>19:00</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">Indigo Blue</div>
-      <div class="poster-credits">dir. Albert Pritchard<br>10:00 · 2025</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">The Fuzz</div>
-      <div class="poster-credits">dir. Shannon Ross<br>0:45</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">UltraHYPER</div>
-      <div class="poster-credits">dir. Alec Hawkins<br>4:15 · 2023</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">Daddy's Little Meatball</div>
-      <div class="poster-credits">dir. Yael Grunseit<br>15:00 · 2026<br>Tribeca</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">ZAI</div>
-      <div class="poster-credits">16mm · Drama</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">The Fun Part</div>
-      <div class="poster-credits">dir. Hudson Flynn<br>5:37 · 2025</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">Together Forever</div>
-      <div class="poster-credits">dir. Gregory Willis Barnes<br>14:00 · 2026</div>
-    </div>
-  </div>
-
-  <div class="poster-card">
-    <div class="poster-image"></div>
-    <div class="poster-info">
-      <div class="poster-title">Heroine Beige</div>
-      <div class="poster-credits">dir. Kit Moynihan<br>23:30 · 2026</div>
     </div>
   </div>
 
@@ -376,104 +115,9 @@ function equalizeCards() {
   cards.forEach(c => c.style.height = maxH + 'px');
 }
 
-function cropRect(canvas, img) {
-  const d = canvas.dataset;
-  return {
-    sx: d.sx !== undefined ? +d.sx : 0,
-    sy: d.sy !== undefined ? +d.sy : 0,
-    sw: d.sw !== undefined ? +d.sw : img.naturalWidth,
-    sh: d.sh !== undefined ? +d.sh : img.naturalHeight
-  };
-}
-
-// Black halftone — used for The Superintendent.
-function renderBlack(canvas, img) {
-  const w = 400, h = 225, dot = 4;
-  canvas.width = w; canvas.height = h;
-  const ctx = canvas.getContext('2d');
-  const c = cropRect(canvas, img);
-  ctx.filter = 'grayscale(1) contrast(1.4)';
-  ctx.drawImage(img, c.sx, c.sy, c.sw, c.sh, 0, 0, w, h);
-  ctx.filter = 'none';
-  const data = ctx.getImageData(0, 0, w, h).data;
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(0, 0, w, h);
-  ctx.fillStyle = '#000';
-  for (let y = dot / 2; y < h; y += dot) {
-    for (let x = dot / 2; x < w; x += dot) {
-      const i = (Math.floor(y) * w + Math.floor(x)) * 4;
-      const r = (1 - data[i] / 255) * (dot / 2) * 0.95;
-      if (r > 0.3) { ctx.beginPath(); ctx.arc(x, y, r, 0, 6.2832); ctx.fill(); }
-    }
-  }
-}
-
-// Process-color halftone using only cyan, magenta, yellow inks (no black plate),
-// each on its own rotated screen, multiply-blended over white.
-function renderCMY(canvas, img) {
-  const w = 560, h = 315, dot = 5;
-  canvas.width = w; canvas.height = h;
-  const ctx = canvas.getContext('2d');
-  const c = cropRect(canvas, img);
-
-  const tmp = document.createElement('canvas');
-  tmp.width = w; tmp.height = h;
-  const tctx = tmp.getContext('2d');
-  tctx.drawImage(img, c.sx, c.sy, c.sw, c.sh, 0, 0, w, h);
-  const data = tctx.getImageData(0, 0, w, h).data;
-
-  function chan(x, y, k) {
-    x = x < 0 ? 0 : (x > w - 1 ? w - 1 : x | 0);
-    y = y < 0 ? 0 : (y > h - 1 ? h - 1 : y | 0);
-    return data[(y * w + x) * 4 + k];
-  }
-
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(0, 0, w, h);
-  ctx.globalCompositeOperation = 'multiply';
-
-  const screens = [
-    { col: 'rgb(0,174,239)', ang: 15 * Math.PI / 180, k: 0 }, // cyan   from R
-    { col: 'rgb(236,0,140)', ang: 75 * Math.PI / 180, k: 1 }, // magenta from G
-    { col: 'rgb(255,241,0)', ang: 0,                  k: 2 }  // yellow from B
-  ];
-  const diag = Math.ceil(Math.sqrt(w * w + h * h));
-  for (const s of screens) {
-    ctx.fillStyle = s.col;
-    const cos = Math.cos(s.ang), sin = Math.sin(s.ang);
-    for (let v = -diag; v < diag; v += dot) {
-      for (let u = -diag; u < diag; u += dot) {
-        const x = u * cos - v * sin + w / 2;
-        const y = u * sin + v * cos + h / 2;
-        if (x < -dot || x > w + dot || y < -dot || y > h + dot) continue;
-        const ink = 1 - chan(x, y, s.k) / 255;
-        const r = Math.sqrt(ink) * (dot / 2) * 1.15;
-        if (r > 0.25) { ctx.beginPath(); ctx.arc(x, y, r, 0, 6.2832); ctx.fill(); }
-      }
-    }
-  }
-  ctx.globalCompositeOperation = 'source-over';
-}
-
-function renderHalftones() {
-  document.querySelectorAll('.halftone-canvas').forEach(function (canvas) {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = function () {
-      try {
-        if (canvas.dataset.mode === 'black') renderBlack(canvas, img);
-        else renderCMY(canvas, img);
-      } catch (e) { /* tainted/cross-origin — leave blank */ }
-      equalizeCards();
-    };
-    img.src = canvas.dataset.src;
-  });
-}
-
 document.addEventListener('DOMContentLoaded', function () {
   equalizeCards();
   window.addEventListener('resize', equalizeCards);
-  renderHalftones();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(equalizeCards);
 });
 </script>

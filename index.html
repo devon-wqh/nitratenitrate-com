@@ -21,6 +21,11 @@
   }
 
   a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover {
     color: blue;
     text-decoration: underline;
   }
@@ -32,6 +37,10 @@
     display: inline-flex;
     align-items: baseline;
     gap: 0.35em;
+  }
+
+  .drawer-trigger:hover {
+    color: blue;
   }
 
   .drawer-triangle {
@@ -59,13 +68,16 @@
   }
 
   .drawer-content a {
-    color: inherit;
-    text-decoration: none;
     display: block;
     line-height: 1.6;
   }
 
   .drawer-content a:hover {
+    text-decoration: underline;
+  }
+
+  .always-blue {
+    color: blue;
     text-decoration: underline;
   }
 
@@ -211,34 +223,28 @@ function toggleDrawer(id) {
 </head>
 <body>
 
-<p><a href="/what-is-nitrate.html" style="color: inherit; text-decoration: none;">Nitrate</a></p>
+<p><a href="/what-is-nitrate.html"><strong>Nitrate</strong></a></p>
 
 <p>
-  <span class="drawer-trigger" id="films-trigger" onclick="toggleDrawer('films')">
-    <span class="drawer-triangle">▶&#xFE0E;</span>Films
-  </span>
-  <span class="drawer-content" id="films-drawer">
-    <a href="wolfs-clothing-film.html">Wolf's Clothing — Shannon Ross</a>
-      <a href="the-superintendent-film.html">The Superintendent — Evan Dominguez</a>
-  </span>
-  <br>
   <span class="drawer-trigger" id="press-trigger" onclick="toggleDrawer('press')">
     <span class="drawer-triangle">▶&#xFE0E;</span>Press
   </span>
   <span class="drawer-content" id="press-drawer">
     <a href="/wolfs-clothing-interview.html">Your Local Zine Artist and Her Sheepish Werewolf Short</a>
     <a href="/the-superintendent-interview.html">What Does Your Super Think About All Day Long?</a>
-    <a href="/spider-interview.html">cate christiansen forrays into directing through the mundane topic of arachnophilia</a>
+    <a href="/spider-interview.html">A Forray into Directing Through the Mundane Topic of Arachnophilia</a>
   </span>
   <br>
   <span class="drawer-trigger" id="calendar-trigger" onclick="toggleDrawer('calendar')">
-    <span class="drawer-triangle">▶&#xFE0E;</span>Calendar
+    <span class="drawer-triangle">▶&#xFE0E;</span>Calendars
   </span>
   <span class="drawer-content" id="calendar-drawer">
     <br>
-    <a href="/events.html" style="color:blue;text-decoration:underline;">Events</a>
+    <a href="/events.html">Events</a>
+    <a href="/releases.html">Releases</a>
   </span>
-  
+  <br>
+  <a href="/screening-room.html" class="always-blue">Screening Room</a>
 </p>
 
 </body>

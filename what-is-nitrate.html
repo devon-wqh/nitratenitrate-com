@@ -22,6 +22,11 @@
   }
 
   a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover {
     color: blue;
     text-decoration: underline;
   }
@@ -162,7 +167,7 @@
 </head>
 <body>
 
-<p><a href="/index.html" style="color: inherit; text-decoration: none;">Nitrate</a></p>
+<p><a href="/index.html"><strong>Nitrate</strong></a></p>
 
 <p>
   Nitrate screens films, releases physical copies of those films, shows them online, and writes about the filmmakers.<br>
@@ -179,7 +184,7 @@
   document.getElementById("signup").addEventListener("submit", async function(e) {
     e.preventDefault();
     const email = this.email.value;
-    await fetch("https://script.google.com/macros/s/AKfycbys7CE93riUyA2ivVC6TH4FhmBJOizlloBFXzRvBVJoW3QfDxwWkDBgBwSD6rPzcjE3/exec", { method: "POST", body: new URLSearchParams({ email }) });
+    await fetch("https://script.google.com/macros/s/AKfycbxFOfrZMOJkfmhgl-s7SUr6rl-Ge84j3iyQLnL5poMifdsIUVV-anM9jk8UvtGKVNyf/exec", { method: "POST", body: new URLSearchParams({ email }) });
     this.reset();
     this.innerHTML = "done.";
   });
