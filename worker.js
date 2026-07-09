@@ -7,10 +7,22 @@
 // - /stats?key=... renders an all-time dashboard (key is a Worker secret).
 // - /api/rsvp (POST) records an email or phone RSVP and forwards to Google
 //   Sheets via RSVP_SHEET_URL (a Worker secret pointing at an Apps Script).
+// - /api/checkout (POST) creates a Stripe Checkout Session for a ticket and
+//   returns its hosted URL. Price is looked up server-side from TICKET_PRICES
+//   below — never trust a price sent by the client.
+// - /api/stripe-webhook (POST) receives Stripe's payment confirmation. The
+//   signature is verified against STRIPE_WEBHOOK_SECRET before anything is
+//   written, so a forged POST can't fake a paid ticket.
 
 const REDIRECTS = {
   "/go/tickets-iii":
     "https://www.slipperroom.com/event-details/guest-event-nitrate-iii-film-screening-july-7",
+};
+
+// Ticket price in cents, keyed by event slug. Server-side only — the client
+// never gets to say what it should be charged.
+const TICKET_PRICES = {
+  "nitrate-iv": 500,
 };
 
 let schemaReady = false;
@@ -29,6 +41,12 @@ async function ensureSchema(env) {
       "CREATE TABLE IF NOT EXISTS rsvps (" +
         "id INTEGER PRIMARY KEY, ts INTEGER NOT NULL, event TEXT NOT NULL, " +
         "type TEXT NOT NULL, value TEXT NOT NULL)"
+    ),
+    env.DB.prepare(
+      "CREATE TABLE IF NOT EXISTS tickets (" +
+        "id INTEGER PRIMARY KEY, ts INTEGER NOT NULL, event TEXT NOT NULL, " +
+        "session_id TEXT UNIQUE NOT NULL, email TEXT, amount INTEGER NOT NULL, " +
+        "status TEXT NOT NULL)"
     ),
   ]);
   schemaReady = true;
@@ -108,6 +126,121 @@ async function handleRsvp(env, request, ctx) {
         body: JSON.stringify({ event, type, value: v, timestamp: new Date().toISOString() }),
       }).catch(() => {})
     );
+  }
+
+  return jsonRes({ ok: true });
+}
+
+async function handleCheckout(env, request, ctx, url) {
+  if (!env.STRIPE_SECRET_KEY) return jsonRes({ error: "Ticketing not set up yet" }, 503);
+
+  let body;
+  try { body = await request.json(); } catch { return jsonRes({ error: "Invalid request" }, 400); }
+
+  const event = String(body.event || "").slice(0, 50);
+  const amount = TICKET_PRICES[event];
+  if (!amount) return jsonRes({ error: "Unknown event" }, 400);
+
+  const params = new URLSearchParams({
+    mode: "payment",
+    success_url: `${url.origin}/event-${event}.html?ticket=success`,
+    cancel_url: `${url.origin}/event-${event}.html?ticket=cancelled`,
+    "line_items[0][price_data][currency]": "usd",
+    "line_items[0][price_data][product_data][name]": `Nitrate — ${event} ticket`,
+    "line_items[0][price_data][unit_amount]": String(amount),
+    "line_items[0][quantity]": "1",
+    "metadata[event]": event,
+  });
+
+  let res, data;
+  try {
+    res = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.STRIPE_SECRET_KEY}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: params,
+    });
+    data = await res.json();
+  } catch (e) {
+    return jsonRes({ error: "Stripe request failed" }, 502);
+  }
+  if (!res.ok) return jsonRes({ error: "Stripe error" }, 502);
+
+  return jsonRes({ url: data.url });
+}
+
+function timingSafeEqual(a, b) {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+async function verifyStripeSignature(payload, sigHeader, secret) {
+  if (!sigHeader) return false;
+  const parts = Object.fromEntries(sigHeader.split(",").map((p) => p.split("=")));
+  const timestamp = parts.t;
+  const v1 = parts.v1;
+  if (!timestamp || !v1) return false;
+
+  // Reject stale signatures (replay protection): 5 minute tolerance.
+  if (Math.abs(Date.now() / 1000 - Number(timestamp)) > 300) return false;
+
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const sigBuf = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(`${timestamp}.${payload}`));
+  const expected = [...new Uint8Array(sigBuf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  return timingSafeEqual(expected, v1);
+}
+
+async function handleStripeWebhook(env, request, ctx) {
+  const payload = await request.text();
+  const ok = env.STRIPE_WEBHOOK_SECRET
+    ? await verifyStripeSignature(payload, request.headers.get("stripe-signature"), env.STRIPE_WEBHOOK_SECRET)
+    : false;
+  if (!ok) return jsonRes({ error: "Invalid signature" }, 400);
+
+  let evt;
+  try { evt = JSON.parse(payload); } catch { return jsonRes({ error: "Invalid payload" }, 400); }
+
+  if (evt.type === "checkout.session.completed") {
+    const session = evt.data.object;
+    const eventSlug = session.metadata?.event || "";
+    const email = session.customer_details?.email || null;
+
+    try {
+      await ensureSchema(env);
+      await env.DB.prepare(
+        "INSERT OR IGNORE INTO tickets (ts, event, session_id, email, amount, status) VALUES (?, ?, ?, ?, ?, ?)"
+      )
+        .bind(Date.now(), eventSlug, session.id, email, session.amount_total || 0, "paid")
+        .run();
+    } catch (e) {
+      // Stripe retries on non-2xx, so surface the failure so it tries again.
+      return jsonRes({ error: "Server error" }, 500);
+    }
+
+    if (env.RSVP_SHEET_URL) {
+      ctx.waitUntil(
+        fetch(env.RSVP_SHEET_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event: eventSlug,
+            type: "ticket",
+            value: email || session.id,
+            timestamp: new Date().toISOString(),
+          }),
+        }).catch(() => {})
+      );
+    }
   }
 
   return jsonRes({ ok: true });
@@ -389,6 +522,14 @@ export default {
     // RSVP form submissions.
     if (url.pathname === "/api/rsvp" && request.method === "POST") {
       return handleRsvp(env, request, ctx);
+    }
+
+    // Ticket purchases.
+    if (url.pathname === "/api/checkout" && request.method === "POST") {
+      return handleCheckout(env, request, ctx, url);
+    }
+    if (url.pathname === "/api/stripe-webhook" && request.method === "POST") {
+      return handleStripeWebhook(env, request, ctx);
     }
 
     // Private stats dashboard.
