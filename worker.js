@@ -141,11 +141,11 @@ async function computeStats(env) {
     return (await stmt.first("n")) ?? 0;
   };
 
-  const [views, visits, clicks, tenMinRaw, hourlyRaw, dailyRaw, topPages, clickRows, countries] =
+  const [views, visits, spiderInterviewViews, tenMinRaw, hourlyRaw, dailyRaw, topPages, clickRows, countries] =
     await Promise.all([
       one("SELECT count(*) AS n FROM events WHERE type='view'"),
       one("SELECT count(DISTINCT visitor) AS n FROM events"),
-      one("SELECT count(*) AS n FROM events WHERE type='click'"),
+      one("SELECT count(*) AS n FROM events WHERE type='view' AND path='/spider-interview'"),
       env.DB.prepare(
         "SELECT CAST(ts/600000 AS INTEGER) AS bucket, count(*) AS n " +
         "FROM events WHERE type='view' AND ts>? GROUP BY bucket ORDER BY bucket"
@@ -220,7 +220,7 @@ async function computeStats(env) {
     ).join("");
 
   return {
-    views, visits, clicks, chartJson, periodRowsHtml,
+    views, visits, spiderInterviewViews, chartJson, periodRowsHtml,
     topPagesHtml: rankRows(topPages.results, "path"),
     clickRowsHtml: rankRows(clickRows.results, "path"),
     countriesHtml: rankRows(countries.results, "country"),
@@ -234,7 +234,7 @@ function statsBodyHtml(s, title) {
 <div class="totals">
   <div>Views<b>${s.views}</b></div>
   <div>Visits<b>${s.visits}</b></div>
-  <div>Ticket clicks<b>${s.clicks}</b></div>
+  <div>Spider interview visits<b>${s.spiderInterviewViews}</b></div>
 </div>
 
 <h2>Trending</h2>
