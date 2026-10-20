@@ -162,6 +162,31 @@
     font-style: italic;
     margin: 0 0 0.5rem;
   }
+  .tickets {
+    margin-top: 2rem;
+    border-top: 1px solid #000;
+    padding-top: 1.25rem;
+    max-width: 480px;
+  }
+
+  .tickets-label {
+    font-style: italic;
+    margin-bottom: 0.5rem;
+  }
+
+  .tickets-btn {
+    display: inline-block;
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    background: #000;
+    color: #fff;
+    padding: 0.35rem 1.1rem;
+    text-decoration: none;
+  }
+
+  .tickets-btn:hover {
+    background: #333;
+  }
 </style>
 </head>
 <body>
@@ -200,6 +225,11 @@
   </div>
 </div>
 
+<div class="tickets">
+  <div class="tickets-label">Tickets</div>
+  <a class="tickets-btn" href="https://www.slipperroom.com/event-details/guest-event-nitrate-v-october-20" target="_blank" rel="noopener">Get tickets →</a>
+</div>
+
 <div class="rsvp">
   <p class="rsvp-prompt">Keep me updated</p>
   <div id="rsvp-form">
@@ -214,7 +244,7 @@
   <p class="rsvp-success" id="rsvp-done" style="display:none">You're on the list. We'll let you know about the next one.</p>
 </div>
 
-<img src="fliers/nitrate-v.jpg" alt="Nitrate v poster by Sidney Rose White" style="width:100%;height:auto;display:block;margin-top:2rem;">
+<a href="https://www.slipperroom.com/event-details/guest-event-nitrate-v-october-20" target="_blank" rel="noopener"><img src="fliers/nitrate-v.jpg" alt="Nitrate v poster by Sidney Rose White" style="width:100%;height:auto;display:block;margin-top:2rem;"></a>
 
 <script>
 var rsvpType = 'email';
