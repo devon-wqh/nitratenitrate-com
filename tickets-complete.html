@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Tickets — Nitrate</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 2rem;
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    background: #fff;
+    color: #000;
+    max-width: 600px;
+  }
+
+  p {
+    margin: 0 0 1.5rem 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+  }
+
+  .confirm-title {
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 0.4rem;
+  }
+
+  .confirm-header {
+    border-bottom: 1px solid #000;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .detail {
+    color: #555;
+  }
+
+  .show {
+    margin-bottom: 1.25rem;
+  }
+
+  .show-name {
+    font-weight: 500;
+  }
+
+  .muted {
+    font-style: italic;
+    color: #555;
+  }
+
+  .back a {
+    color: blue;
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="/index.html">Nitrate</a>
+  <a href="/events.html">← Events</a>
+</div>
+
+<div id="status">
+  <p class="muted">Checking your order…</p>
+</div>
+
+<script>
+// Stripe sends the customer back here with ?session_id=... after payment.
+// The Worker asks Stripe whether the payment actually completed — we never
+// trust the URL alone.
+function esc(t) {
+  return String(t == null ? '' : t).replace(/[&<>]/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c];
+  });
+}
+
+async function showResult() {
+  var box = document.getElementById('status');
+  var sessionId = new URLSearchParams(window.location.search).get('session_id');
+
+  if (!sessionId) {
+    box.innerHTML = '<p class="muted">Nothing to show here.</p>' +
+      '<p class="back"><a href="/events.html">See upcoming events →</a></p>';
+    return;
+  }
+
+  try {
+    var res = await fetch('/api/checkout-status?session_id=' + encodeURIComponent(sessionId));
+    var data = await res.json();
+    if (!res.ok) throw new Error();
+
+    if (data.status === 'complete') {
+      var qty = data.quantity || 1;
+      var first = (data.name || '').trim().split(/\s+/)[0] || '';
+      var shows = data.shows || [];
+
+      // Render whichever show(s) this ticket actually covers — a double
+      // header lists both nights.
+      var detail = shows.map(function (c) {
+        return '<div class="show">' +
+          '<div class="show-name">' + esc(c.name) + '</div>' +
+          '<div class="detail">' + esc(c.when) + ' &middot; ' + esc(c.doors) + '</div>' +
+          '<div class="detail">' + esc(c.venue) + ', ' + esc(c.address) + '</div>' +
+        '</div>';
+      }).join('');
+
+      var lead = data.bundle
+        ? qty + (qty === 1 ? ' ticket' : ' tickets') + ' to each night'
+        : qty + (qty === 1 ? ' ticket' : ' tickets');
+
+      box.innerHTML =
+        '<div class="confirm-header">' +
+          '<div class="confirm-title">' + (first ? esc(first) + ', you\'re in.' : 'You\'re in.') + '</div>' +
+          '<div class="detail">' + lead + '</div>' +
+        '</div>' +
+        detail +
+        '<p>A confirmation is on its way' +
+          (data.email ? ' to ' + esc(data.email) : '') +
+          '. No printed ticket needed — just give your name at the door.</p>' +
+        '<p class="back"><a href="/events.html">← All events</a></p>';
+    } else {
+      // status 'open' means the payment didn't go through — send them back to retry.
+      box.innerHTML =
+        '<p>That payment didn\'t go through, so you haven\'t been charged.</p>' +
+        '<p class="back"><a href="/event-la-horror-shorts.html">← Try again</a></p>';
+    }
+  } catch (e) {
+    box.innerHTML =
+      '<p>We couldn\'t look up that order. If you were charged, your ticket is safe — ' +
+      'email us and we\'ll sort it out.</p>' +
+      '<p class="back"><a href="/event-la-horror-shorts.html">← Back to the event</a></p>';
+  }
+}
+
+showResult();
+</script>
+
+</body>
+</html>

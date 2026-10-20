@@ -6,3 +6,7 @@ wrangler.toml
 .DS_Store
 **/.DS_Store
 .claude
+.wrangler
+node_modules
+.dev.vars
+orders-sheet.gs

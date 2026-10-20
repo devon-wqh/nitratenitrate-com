@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Events — Nitrate</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
@@ -55,7 +58,8 @@
   }
 
   .event-name a {
-    color: inherit;
+    color: blue;
+    text-decoration: underline;
   }
 
   .event-date,
@@ -101,6 +105,19 @@
     display: block;
   }
 
+  /* Fliers that aren't square: show the whole artwork instead of cropping it
+     to the 1:1 box. The tile takes the image's own proportions. */
+  .event-flier.natural {
+    aspect-ratio: auto;
+    background: none;
+    border: none;
+  }
+
+  .event-flier.natural img {
+    height: auto;
+    object-fit: contain;
+  }
+
   @media (max-width: 720px) {
     body { max-width: none; }
     .event-row {
@@ -121,20 +138,113 @@
 
 <div class="event-row">
   <div class="event-meta">
-    <div class="event-name"><a href="/event-nitrate-iv.html">Nitrate iv</a></div>
-    <div class="event-date">August 1, 2026</div>
-    <div class="event-address">Bed-Stuy, Brooklyn</div>
+    <div class="event-name"><a href="/event-nitrate-v.html">Nitrate v</a></div>
+    <div class="event-date">October 20, 2026</div>
+    <div class="event-address">The Slipper Room<br>167 Orchard Street, LES<br>Doors 7pm &middot; Films 8pm</div>
   </div>
   <div class="event-program">
     <div class="program-section">
-      <span class="program-label">Lineup</span><br>
-      <span class="program-item" style="color:#aaa">TBA</span>
+      <span class="program-label">Films</span><br>
+      <span class="program-item"><em>By the Window</em> &mdash; dir. Case Avron</span>
+      <span class="program-item"><em>LVRS</em> &mdash; dir. Emily Bennett</span>
+      <span class="program-item"><em>Monkey Drum</em> &mdash; dir. Jeremy Lu</span>
+      <span class="program-item" style="font-style:italic;color:#555">Intermission</span>
+      <span class="program-item"><em>The Businessman</em> &mdash; dir. Nathan Ginter</span>
+      <span class="program-item">A film by Edie Turquet</span>
+      <span class="program-item"><em>Booba</em> &mdash; dir. Gaoyang Ganjin</span>
+    </div>
+    <div class="program-section">
+      <span class="program-label">Music</span><br>
+      <span class="program-item">itg.url</span>
+    </div>
+    <div class="program-section">
+      <span class="program-label">Poster</span><br>
+      <span class="program-item">Sidney Rose White</span>
     </div>
   </div>
-  <a href="/event-nitrate-iv.html" class="event-flier"><img src="fliers/nitrate-iv.png" alt="Nitrate iv flier"></a>
+  <a href="/event-nitrate-v.html" class="event-flier natural"><img src="fliers/nitrate-v.jpg" alt="Nitrate v poster by Sidney Rose White"></a>
 </div>
 
 <div class="section-label">Past</div>
+
+<div class="event-row">
+  <div class="event-meta">
+    <div class="event-name"><a href="/event-la-horror-shorts.html">Nitrate Twice x Monolithic Pictures present: LA Horror Shorts</a></div>
+    <div class="event-date">October 6, 2026</div>
+    <div class="event-address">Videotheque<br>4102 N Figueroa St, Los Angeles, CA<br>Doors 7pm &middot; Films 8pm</div>
+  </div>
+  <div class="event-program">
+    <div class="program-section">
+      <span class="program-label">Films</span><br>
+      <span class="program-item"><em>Ethel</em> &mdash; dir. Micah Schultz</span>
+      <span class="program-item"><em>Overgrown</em> &mdash; dir. Nathan Ginter</span>
+      <span class="program-item"><em>Death Game</em> &mdash; dir. Jacqueline Kramer</span>
+      <span class="program-item" style="font-style:italic;color:#555">Intermission</span>
+      <span class="program-item"><em>Vape Glow</em> &mdash; dir. Steven Schloss</span>
+      <span class="program-item"><em>Gog</em> &mdash; dir. Kara Grace Miller</span>
+      <span class="program-item"><em>Rat!</em> &mdash; dir. Neal Mulani</span>
+    </div>
+    <div class="program-section">
+      <span class="program-label">Poster</span><br>
+      <span class="program-item">J Wills</span>
+    </div>
+  </div>
+  <a href="/event-la-horror-shorts.html" class="event-flier natural"><img src="fliers/la-horror-shorts.jpg" alt="LA Horror Shorts poster by J Wills"></a>
+</div>
+
+<div class="event-row">
+  <div class="event-meta">
+    <div class="event-name"><a href="/event-la-doc-shorts.html">Monolithic Pictures x Nitrate Twice present: LA Doc Shorts</a></div>
+    <div class="event-date">October 2, 2026</div>
+    <div class="event-address">Videotheque<br>4102 N Figueroa St, Los Angeles, CA<br>Doors 7pm &middot; Films 8pm</div>
+  </div>
+  <div class="event-program">
+    <div class="program-section">
+      <span class="program-label">Films</span><br>
+      <span class="program-item"><em>Portraits</em> &mdash; dir. Ian S. Cumming</span>
+      <span class="program-item"><em>Georgie</em> &mdash; dir. Jennie Butler</span>
+      <span class="program-item"><em>Gatorville</em> &mdash; dir. Freddie Gluck</span>
+      <span class="program-item" style="font-style:italic;color:#555">Intermission</span>
+      <span class="program-item"><em>Lab Man</em> &mdash; dir. Neil Butler</span>
+      <span class="program-item"><em>Chrysalis</em> &mdash; dir. Yago Hunt-Laudi</span>
+      <span class="program-item"><em>Mzia Leaves the Room</em> &mdash; dir. Madeline Leary</span>
+    </div>
+    <div class="program-section">
+      <span class="program-label">Poster</span><br>
+      <span class="program-item">Kevin Broadway</span>
+    </div>
+  </div>
+  <a href="/event-la-doc-shorts.html" class="event-flier natural"><img src="fliers/la-doc-shorts.jpg" alt="LA Doc Shorts poster by Kevin Broadway"></a>
+</div>
+
+<div class="event-row">
+  <div class="event-meta">
+    <div class="event-name"><a href="/event-nitrate-iv.html">Nitrate iv</a></div>
+    <div class="event-date">August 19, 2026</div>
+    <div class="event-address">KGB Bar<br>Doors 7pm &middot; Films 8pm</div>
+  </div>
+  <div class="event-program">
+    <div class="program-section">
+      <span class="program-label">Films</span><br>
+      <span class="program-item"><em>The Dalles</em> &mdash; dir. Angalis Fields</span>
+      <span class="program-item"><em>Wisp</em> &mdash; dir. Emma Ridley</span>
+      <span class="program-item"><em>The Old Young Crow</em> &mdash; dir. Liam LoPinto</span>
+      <span class="program-item" style="font-style:italic;color:#555">Intermission</span>
+      <span class="program-item"><em>The Other Side</em> &mdash; dir. Josh Leong</span>
+      <span class="program-item"><em>M&#257;noa Valley</em> &mdash; dir. Emily May Jampel</span>
+      <span class="program-item"><em>500 Flowers</em> &mdash; dir. Aiden Chavis</span>
+    </div>
+    <div class="program-section">
+      <span class="program-label">Music</span><br>
+      <span class="program-item">Kyle Whiting</span>
+    </div>
+    <div class="program-section">
+      <span class="program-label">Poster</span><br>
+      <span class="program-item">Kai Ruben Wish</span>
+    </div>
+  </div>
+  <a href="/event-nitrate-iv.html" class="event-flier natural"><img src="fliers/nitrate-iv.jpg" alt="Nitrate iv poster by Kai Ruben Wish"></a>
+</div>
 
 <div class="event-row">
   <div class="event-meta">
@@ -159,7 +269,7 @@
       <span class="program-item">DJ 5spice</span>
     </div>
   </div>
-  <a href="/event-nitrate-iii.html" class="event-flier"><img src="fliers/nitrate-iii.png" alt="Nitrate iii flier"></a>
+  <a href="/event-nitrate-iii.html" class="event-flier natural"><img src="fliers/nitrate-iii.jpg" alt="Nitrate iii flier"></a>
 </div>
 
 <div class="event-row">

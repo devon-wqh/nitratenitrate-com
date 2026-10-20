@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nitrate iv — Nitrate</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
@@ -69,7 +72,12 @@
 
   .program-item {
     display: block;
-    color: #aaa;
+  }
+
+  .intermission {
+    font-style: italic;
+    color: #555;
+    margin: 0.4rem 0;
   }
 
   .rsvp {
@@ -149,6 +157,11 @@
   .rsvp-success {
     font-style: italic;
   }
+
+  .rsvp-prompt {
+    font-style: italic;
+    margin: 0 0 0.5rem;
+  }
 </style>
 </head>
 <body>
@@ -160,18 +173,34 @@
 
 <div class="event-header">
   <div class="event-title">Nitrate iv</div>
-  <div>August 1, 2026</div>
-  <div class="event-address">Bed-Stuy, Brooklyn</div>
+  <div>August 19, 2026</div>
+  <div class="event-address">KGB Bar</div>
+  <div class="event-address">Doors 7pm &middot; Films begin promptly at 8pm</div>
 </div>
 
 <div class="program">
   <div class="program-section">
-    <span class="program-label">Lineup</span>
-    <span class="program-item">TBA</span>
+    <span class="program-label">Films</span>
+    <span class="program-item"><em>The Dalles</em> &mdash; dir. Angalis Fields</span>
+    <span class="program-item"><em>Wisp</em> &mdash; dir. Emma Ridley</span>
+    <span class="program-item"><em>The Old Young Crow</em> &mdash; dir. Liam LoPinto</span>
+    <span class="program-item intermission">Intermission</span>
+    <span class="program-item"><em>The Other Side</em> &mdash; dir. Josh Leong</span>
+    <span class="program-item"><em>M&#257;noa Valley</em> &mdash; dir. Emily May Jampel</span>
+    <span class="program-item"><em>500 Flowers</em> &mdash; dir. Aiden Chavis</span>
+  </div>
+  <div class="program-section">
+    <span class="program-label">Music</span>
+    <span class="program-item">Kyle Whiting</span>
+  </div>
+  <div class="program-section">
+    <span class="program-label">Poster</span>
+    <span class="program-item">Kai Ruben Wish</span>
   </div>
 </div>
 
 <div class="rsvp">
+  <p class="rsvp-prompt">Keep me updated</p>
   <div id="rsvp-form">
     <div class="rsvp-toggle">
       <button id="btn-email" class="toggle active" onclick="setType('email')">Email</button><!--
@@ -179,12 +208,12 @@
     </div>
     <input type="email" id="rsvp-val" placeholder="you@example.com" autocomplete="email">
     <div class="rsvp-error" id="rsvp-error"></div>
-    <button id="rsvp-submit" onclick="submitRsvp()">RSVP →</button>
+    <button id="rsvp-submit" onclick="submitRsvp()">Keep me updated →</button>
   </div>
-  <p class="rsvp-success" id="rsvp-done" style="display:none">You're on the list. August 1 · Bed-Stuy, Brooklyn.</p>
+  <p class="rsvp-success" id="rsvp-done" style="display:none">You're on the list. We'll let you know about the next one.</p>
 </div>
 
-<img src="fliers/nitrate-iv.png" alt="Nitrate iv flier" style="width:100%;display:block;margin-top:2rem;">
+<img src="fliers/nitrate-iv.jpg" alt="Nitrate iv poster by Kai Ruben Wish" style="width:100%;height:auto;display:block;margin-top:2rem;">
 
 <script>
 var rsvpType = 'email';
@@ -226,7 +255,7 @@ async function submitRsvp() {
     var res = await fetch('/api/rsvp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ event: 'nitrate-iv', type: rsvpType, value: val })
+      body: JSON.stringify({ event: 'updates', type: rsvpType, value: val })
     });
     if (!res.ok) throw new Error();
     document.getElementById('rsvp-form').style.display = 'none';
@@ -234,7 +263,7 @@ async function submitRsvp() {
   } catch (e) {
     err.textContent = 'Something went wrong. Please try again.';
     btn.disabled = false;
-    btn.textContent = 'RSVP →';
+    btn.textContent = 'Keep me updated →';
   }
 }
 </script>

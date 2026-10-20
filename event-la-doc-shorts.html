@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LA Doc Shorts @ Videotheque — Nitrate</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 2rem;
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    background: #fff;
+    color: #000;
+    max-width: 780px;
+  }
+
+  p {
+    margin: 0 0 1.5rem 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+  }
+
+  .event-header {
+    border-bottom: 1px solid #000;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .event-title {
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 0.4rem;
+  }
+
+  .event-address {
+    color: #555;
+  }
+
+  .program {
+    margin-bottom: 2rem;
+  }
+
+  .program-section {
+    margin-bottom: 1rem;
+  }
+
+  .program-label {
+    font-style: italic;
+    border-bottom: 1px solid #ddd;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .program-item {
+    display: block;
+  }
+
+  .intermission {
+    font-style: italic;
+    color: #555;
+    margin: 0.4rem 0;
+  }
+
+  .tickets {
+    margin-top: 2rem;
+    border-top: 1px solid #000;
+    padding-top: 1.25rem;
+    max-width: 480px;
+  }
+
+  .tickets-label {
+    font-style: italic;
+    margin-bottom: 0.5rem;
+  }
+
+  .ticket-option {
+    display: block;
+    padding: 0.25rem 0;
+    cursor: pointer;
+  }
+
+  .ticket-option input {
+    margin-right: 0.45rem;
+  }
+
+  .ticket-option .note {
+    color: #555;
+    font-style: italic;
+  }
+
+  .ticket-option.is-sold-out {
+    color: #aaa;
+    cursor: default;
+  }
+
+  .buy-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .buy-row select {
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    padding: 0.3rem 0.5rem;
+    background: #fff;
+    outline: none;
+  }
+
+  .buy-row select:focus {
+    border-color: #000;
+  }
+
+  #buy-btn {
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 0.35rem 1.1rem;
+    cursor: pointer;
+  }
+
+  #buy-btn:hover {
+    background: #333;
+  }
+
+  #buy-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .tickets-error {
+    color: #c00;
+    font-size: 0.85rem;
+    margin-top: 0.4rem;
+    min-height: 1.1em;
+  }
+
+  .sold-out {
+    font-style: italic;
+    color: #555;
+  }
+
+  /* Stripe mounts its payment form into this. */
+  #checkout {
+    margin-top: 1rem;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="/index.html">Nitrate</a>
+  <a href="/events.html">← Events</a>
+</div>
+
+<div class="event-header">
+  <div class="event-title">Monolithic Pictures x Nitrate Twice present: LA Doc Shorts</div>
+  <div>October 2, 2026</div>
+  <div class="event-address">Videotheque<br>4102 N Figueroa St, Los Angeles, CA</div>
+  <div class="event-address">Doors 7pm &middot; Films begin promptly at 8pm</div>
+</div>
+
+<div class="program">
+  <div class="program-section">
+    <span class="program-label">Films</span>
+    <span class="program-item"><em>Portraits</em> &mdash; dir. Ian S. Cumming</span>
+    <span class="program-item"><em>Georgie</em> &mdash; dir. Jennie Butler</span>
+    <span class="program-item"><em>Gatorville</em> &mdash; dir. Freddie Gluck</span>
+    <span class="program-item intermission">Intermission</span>
+    <span class="program-item"><em>Lab Man</em> &mdash; dir. Neil Butler</span>
+    <span class="program-item"><em>Chrysalis</em> &mdash; dir. Yago Hunt-Laudi</span>
+    <span class="program-item"><em>Mzia Leaves the Room</em> &mdash; dir. Madeline Leary</span>
+  </div>
+  <div class="program-section">
+    <span class="program-label">Poster</span>
+    <span class="program-item">Kevin Broadway</span>
+  </div>
+</div>
+
+<div class="tickets">
+  <div class="tickets-label">Tickets</div>
+
+  <div id="ticket-options"></div>
+
+  <div class="buy-row" id="buy-row" style="display:none">
+    <select id="qty" aria-label="Number of tickets"></select>
+    <button id="buy-btn" onclick="startCheckout()">Get tickets →</button>
+  </div>
+
+  <div class="tickets-error" id="tickets-error"></div>
+
+  <!-- Stripe's payment form is mounted here, in the page. -->
+  <div id="checkout"></div>
+</div>
+
+<img src="fliers/la-doc-shorts.jpg" alt="LA Doc Shorts poster by Kevin Broadway"
+     style="width:100%;height:auto;display:block;margin-top:2rem;">
+
+<script src="https://js.stripe.com/dahlia/stripe.js"></script>
+<script>
+var EVENT_KEY = 'la-doc-shorts';
+var OPTIONS = [];
+var selected = null;
+var checkoutOpen = false;
+
+function money(cents) {
+  return '$' + (cents / 100).toFixed(2).replace(/\.00$/, '');
+}
+
+// Each show sells its own ticket plus, where offered, a double header that
+// also admits you to the other night.
+async function loadOptions() {
+  var box = document.getElementById('ticket-options');
+  try {
+    var res = await fetch('/api/tickets-remaining?event=' + EVENT_KEY);
+    var data = await res.json();
+    if (!res.ok) throw new Error();
+    OPTIONS = data.options || [];
+
+    if (data.soldOut && OPTIONS.every(function (o) { return o.soldOut; })) {
+      box.innerHTML = '<span class="sold-out">Sold out.</span>';
+      return;
+    }
+
+    var single = OPTIONS[0];
+    box.innerHTML = OPTIONS.map(function (o, i) {
+      var save = o.bundle && single ? (single.priceCents * 2) - o.priceCents : 0;
+      var note = o.soldOut
+        ? ' <span class="note">sold out</span>'
+        : (save > 0 ? ' <span class="note">both nights, save ' + money(save) + '</span>' : '');
+      var low = !o.soldOut && o.remaining <= 10
+        ? ' <span class="note">' + o.remaining + ' left</span>' : '';
+      return '<label class="ticket-option' + (o.soldOut ? ' is-sold-out' : '') + '">' +
+        '<input type="radio" name="ticket" value="' + o.key + '"' +
+          (o.soldOut ? ' disabled' : '') + (i === 0 && !o.soldOut ? ' checked' : '') + '>' +
+        o.label + ' — ' + money(o.priceCents) + note + low +
+      '</label>';
+    }).join('');
+
+    Array.prototype.forEach.call(box.querySelectorAll('input[name=ticket]'), function (el) {
+      el.addEventListener('change', function () { select(el.value); });
+    });
+
+    var first = OPTIONS.filter(function (o) { return !o.soldOut; })[0];
+    if (first) {
+      var el = box.querySelector('input[value="' + first.key + '"]');
+      if (el) el.checked = true;
+      select(first.key);
+      document.getElementById('buy-row').style.display = 'flex';
+    }
+  } catch (e) {
+    box.innerHTML = '<span class="sold-out">Ticket sales are unavailable right now.</span>';
+  }
+}
+
+function select(key) {
+  selected = OPTIONS.filter(function (o) { return o.key === key; })[0];
+  if (!selected) return;
+  var sel = document.getElementById('qty');
+  sel.innerHTML = '';
+  for (var i = 1; i <= Math.max(1, selected.maxPerOrder); i++) {
+    var opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = i + (i === 1 ? ' ticket' : ' tickets');
+    sel.appendChild(opt);
+  }
+  document.getElementById('tickets-error').textContent = '';
+}
+
+async function startCheckout() {
+  if (checkoutOpen || !selected) return;
+
+  var btn = document.getElementById('buy-btn');
+  var err = document.getElementById('tickets-error');
+  err.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'One moment…';
+
+  try {
+    var res = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event: selected.key,
+        quantity: parseInt(document.getElementById('qty').value, 10)
+      })
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Could not start checkout.');
+
+    var stripe = Stripe(data.publishableKey);
+    var checkout = await stripe.createEmbeddedCheckoutPage({
+      fetchClientSecret: function () { return Promise.resolve(data.clientSecret); }
+    });
+    checkout.mount('#checkout');
+
+    checkoutOpen = true;
+    document.getElementById('ticket-options').style.display = 'none';
+    document.getElementById('buy-row').style.display = 'none';
+    document.getElementById('checkout').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } catch (e) {
+    err.textContent = e.message || 'Something went wrong. Please try again.';
+    btn.disabled = false;
+    btn.textContent = 'Get tickets →';
+  }
+}
+
+loadOptions();
+</script>
+
+</body>
+</html>

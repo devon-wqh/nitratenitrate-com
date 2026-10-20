@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nitrate v — Nitrate</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
@@ -13,7 +16,7 @@
     line-height: 1.6;
     background: #fff;
     color: #000;
-    max-width: 780px;
+    max-width: 600px;
   }
 
   p {
@@ -71,15 +74,94 @@
     display: block;
   }
 
+  .intermission {
+    font-style: italic;
+    color: #555;
+    margin: 0.4rem 0;
+  }
+
   .rsvp {
     margin-top: 1.5rem;
+    max-width: 280px;
   }
 
-  .rsvp a {
-    color: blue;
-    text-decoration: underline;
+  .rsvp-toggle {
+    display: flex;
+    margin-bottom: 0.5rem;
   }
 
+  .toggle {
+    font-family: "EB Garamond", serif;
+    font-size: 0.9rem;
+    background: #fff;
+    color: #666;
+    border: 1px solid #ccc;
+    padding: 0.2rem 0.8rem;
+    cursor: pointer;
+    transition: none;
+  }
+
+  .toggle + .toggle {
+    border-left: none;
+  }
+
+  .toggle.active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+  }
+
+  .rsvp input {
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    padding: 0.3rem 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+    background: #fff;
+    margin-bottom: 0.3rem;
+  }
+
+  .rsvp input:focus {
+    border-color: #000;
+  }
+
+  .rsvp-error {
+    color: #c00;
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+    min-height: 1.1em;
+  }
+
+  #rsvp-submit {
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 0.3rem 1rem;
+    cursor: pointer;
+  }
+
+  #rsvp-submit:hover {
+    background: #333;
+  }
+
+  #rsvp-submit:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .rsvp-success {
+    font-style: italic;
+  }
+
+  .rsvp-prompt {
+    font-style: italic;
+    margin: 0 0 0.5rem;
+  }
 </style>
 </head>
 <body>
@@ -91,35 +173,101 @@
 
 <div class="event-header">
   <div class="event-title">Nitrate v</div>
-  <div>September 19, 2026</div>
-  <div class="event-address">290 Meserole St<br>East Williamsburg, Brooklyn</div>
+  <div>October 20, 2026</div>
+  <div class="event-address">6 horror short films</div>
+  <div class="event-address">The Slipper Room<br>167 Orchard Street, LES</div>
+  <div class="event-address">Doors 7pm &middot; Films begin promptly at 8pm</div>
 </div>
 
 <div class="program">
   <div class="program-section">
-    <span class="program-label">Film</span>
-    <span class="program-item"><em>Interior, Night</em> — dir. Sable Reyes, 2025, 20 min</span>
+    <span class="program-label">Films</span>
+    <span class="program-item"><em>By the Window</em> &mdash; dir. Case Avron</span>
+    <span class="program-item"><em>LVRS</em> &mdash; dir. Emily Bennett</span>
+    <span class="program-item"><em>Monkey Drum</em> &mdash; dir. Jeremy Lu</span>
+    <span class="program-item intermission">Intermission</span>
+    <span class="program-item"><em>The Businessman</em> &mdash; dir. Nathan Ginter</span>
+    <span class="program-item">A film by Edie Turquet</span>
+    <span class="program-item"><em>Booba</em> &mdash; dir. Gaoyang Ganjin</span>
   </div>
   <div class="program-section">
     <span class="program-label">Music</span>
-    <span class="program-item">DJ Nomad Press</span>
-    <span class="program-item">Foxglove</span>
+    <span class="program-item">itg.url</span>
   </div>
   <div class="program-section">
-    <span class="program-label">Artists &amp; Vendors</span>
-    <span class="program-item">Grey Scale Press — photobooks</span>
-    <span class="program-item">Anchor &amp; Thread — leather goods</span>
-  </div>
-  <div class="program-section">
-    <span class="program-label">Food</span>
-    <span class="program-item">Tamales</span>
-    <span class="program-item">Hibiscus agua fresca</span>
+    <span class="program-label">Poster</span>
+    <span class="program-item">Sidney Rose White</span>
   </div>
 </div>
 
 <div class="rsvp">
-  <a href="#">RSVP →</a>
+  <p class="rsvp-prompt">Keep me updated</p>
+  <div id="rsvp-form">
+    <div class="rsvp-toggle">
+      <button id="btn-email" class="toggle active" onclick="setType('email')">Email</button><!--
+      --><button id="btn-phone" class="toggle" onclick="setType('phone')">Phone</button>
+    </div>
+    <input type="email" id="rsvp-val" placeholder="you@example.com" autocomplete="email">
+    <div class="rsvp-error" id="rsvp-error"></div>
+    <button id="rsvp-submit" onclick="submitRsvp()">Keep me updated →</button>
+  </div>
+  <p class="rsvp-success" id="rsvp-done" style="display:none">You're on the list. We'll let you know about the next one.</p>
 </div>
+
+<img src="fliers/nitrate-v.jpg" alt="Nitrate v poster by Sidney Rose White" style="width:100%;height:auto;display:block;margin-top:2rem;">
+
+<script>
+var rsvpType = 'email';
+
+function setType(t) {
+  rsvpType = t;
+  var inp = document.getElementById('rsvp-val');
+  inp.type = t === 'email' ? 'email' : 'tel';
+  inp.placeholder = t === 'email' ? 'you@example.com' : '+1 (212) 555-0100';
+  inp.autocomplete = t === 'email' ? 'email' : 'tel';
+  inp.value = '';
+  document.getElementById('rsvp-error').textContent = '';
+  document.getElementById('btn-email').className = 'toggle' + (t === 'email' ? ' active' : '');
+  document.getElementById('btn-phone').className = 'toggle' + (t === 'phone' ? ' active' : '');
+}
+
+async function submitRsvp() {
+  var val = document.getElementById('rsvp-val').value.trim();
+  var err = document.getElementById('rsvp-error');
+  err.textContent = '';
+
+  if (rsvpType === 'email') {
+    if (!val || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+      err.textContent = 'Please enter a valid email address.';
+      return;
+    }
+  } else {
+    if (val.replace(/\D/g, '').length < 7) {
+      err.textContent = 'Please enter a valid phone number.';
+      return;
+    }
+  }
+
+  var btn = document.getElementById('rsvp-submit');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    var res = await fetch('/api/rsvp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event: 'updates', type: rsvpType, value: val })
+    });
+    if (!res.ok) throw new Error();
+    document.getElementById('rsvp-form').style.display = 'none';
+    document.getElementById('rsvp-done').style.display = 'block';
+  } catch (e) {
+    err.textContent = 'Something went wrong. Please try again.';
+    btn.disabled = false;
+    btn.textContent = 'Keep me updated →';
+  }
+}
+</script>
 
 </body>
 </html>
