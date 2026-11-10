@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nitrate v — Nitrate</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 2rem;
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    background: #fff;
+    color: #000;
+    max-width: 600px;
+  }
+
+  p {
+    margin: 0 0 1.5rem 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+  }
+
+  .event-header {
+    border-bottom: 1px solid #000;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .event-title {
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 0.4rem;
+  }
+
+  .event-address {
+    color: #555;
+  }
+
+  .program {
+    margin-bottom: 2rem;
+  }
+
+  .program-section {
+    margin-bottom: 1rem;
+  }
+
+  .program-label {
+    font-style: italic;
+    border-bottom: 1px solid #ddd;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .program-item {
+    display: block;
+  }
+
+  .intermission {
+    font-style: italic;
+    color: #555;
+    margin: 0.4rem 0;
+  }
+
+  .rsvp {
+    margin-top: 1.5rem;
+    max-width: 280px;
+  }
+
+  .rsvp-toggle {
+    display: flex;
+    margin-bottom: 0.5rem;
+  }
+
+  .toggle {
+    font-family: "EB Garamond", serif;
+    font-size: 0.9rem;
+    background: #fff;
+    color: #666;
+    border: 1px solid #ccc;
+    padding: 0.2rem 0.8rem;
+    cursor: pointer;
+    transition: none;
+  }
+
+  .toggle + .toggle {
+    border-left: none;
+  }
+
+  .toggle.active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+  }
+
+  .rsvp input {
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    padding: 0.3rem 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+    background: #fff;
+    margin-bottom: 0.3rem;
+  }
+
+  .rsvp input:focus {
+    border-color: #000;
+  }
+
+  .rsvp-error {
+    color: #c00;
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+    min-height: 1.1em;
+  }
+
+  #rsvp-submit {
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 0.3rem 1rem;
+    cursor: pointer;
+  }
+
+  #rsvp-submit:hover {
+    background: #333;
+  }
+
+  #rsvp-submit:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .rsvp-success {
+    font-style: italic;
+  }
+
+  .rsvp-prompt {
+    font-style: italic;
+    margin: 0 0 0.5rem;
+  }
+  .tickets {
+    margin-top: 2rem;
+    border-top: 1px solid #000;
+    padding-top: 1.25rem;
+    max-width: 480px;
+  }
+
+  .tickets-label {
+    font-style: italic;
+    margin-bottom: 0.5rem;
+  }
+
+  .tickets-btn {
+    display: inline-block;
+    font-family: "EB Garamond", serif;
+    font-size: 0.95rem;
+    background: #000;
+    color: #fff;
+    padding: 0.35rem 1.1rem;
+    text-decoration: none;
+  }
+
+  .tickets-btn:hover {
+    background: #333;
+  }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="/index.html">Nitrate</a>
+  <a href="/events.html">← Events</a>
+</div>
+
+<div class="event-header">
+  <div class="event-title">Nitrate vi</div>
+  <div>November 10, 2026</div>
+  <div class="event-address">6 New York Stories</div>
+  <div class="event-address">at the Slipper Room<br>167 Orchard Street</div>
+  <div class="event-address">Doors 7pm &middot; Films begin promptly at 8pm</div>
+</div>
+
+<div class="program">
+  <div class="program-section">
+    <span class="program-label">Films</span>
+    <span class="program-item"><em>Insufficient Fare</em> &mdash; dir. Michael Gūgger & Varvara </span>
+    <span class="program-item"><em>Homesick</em> &mdash; dir. Nadia Bedj</span>
+    <span class="program-item"><em>Endless Sea</em> &mdash; dir. Sam Shainberg</span>
+    <span class="program-item intermission">Intermission</span>
+    <span class="program-item"><em>A Film</em> &mdash; dir. Emilio Subia</span>
+    <span class="program-item"><em>Closing Dynasty</em> &mdash; dir. Lloyd Lee Choi</span>
+    <span class="program-item"><em>Booba</em> &mdash; dir. Josh Leong</span>
+  </div>
+  <div class="program-section">
+    <span class="program-label">Music</span>
+    <span class="program-item">@cam_lipp</span>
+  </div>
+  <div class="program-section">
+    <span class="program-label">Poster</span>
+    <span class="program-item">Noah Boulton</span>
+  </div>
+</div>
+
+<div class="tickets">
+  <div class="tickets-label">Tickets</div>
+  <a class="tickets-btn" href="https://www.slipperroom.com/event-details/guest-event-nitrate-vi-film-screening-november-10" target="_blank" rel="noopener">Get tickets →</a>
+</div>
+
+<div class="rsvp">
+  <p class="rsvp-prompt">Keep me updated</p>
+  <div id="rsvp-form">
+    <div class="rsvp-toggle">
+      <button id="btn-email" class="toggle active" onclick="setType('email')">Email</button><!--
+      --><button id="btn-phone" class="toggle" onclick="setType('phone')">Phone</button>
+    </div>
+    <input type="email" id="rsvp-val" placeholder="you@example.com" autocomplete="email">
+    <div class="rsvp-error" id="rsvp-error"></div>
+    <button id="rsvp-submit" onclick="submitRsvp()">Keep me updated →</button>
+  </div>
+  <p class="rsvp-success" id="rsvp-done" style="display:none">You're on the list. We'll let you know about the next one.</p>
+</div>
+
+<a href="https://www.slipperroom.com/event-details/guest-event-nitrate-v-october-20" target="_blank" rel="noopener"><img src="fliers/nitrate-v.jpg" alt="Nitrate v poster by Sidney Rose White" style="width:100%;height:auto;display:block;margin-top:2rem;"></a>
+
+<script>
+var rsvpType = 'email';
+
+function setType(t) {
+  rsvpType = t;
+  var inp = document.getElementById('rsvp-val');
+  inp.type = t === 'email' ? 'email' : 'tel';
+  inp.placeholder = t === 'email' ? 'you@example.com' : '+1 (212) 555-0100';
+  inp.autocomplete = t === 'email' ? 'email' : 'tel';
+  inp.value = '';
+  document.getElementById('rsvp-error').textContent = '';
+  document.getElementById('btn-email').className = 'toggle' + (t === 'email' ? ' active' : '');
+  document.getElementById('btn-phone').className = 'toggle' + (t === 'phone' ? ' active' : '');
+}
+
+async function submitRsvp() {
+  var val = document.getElementById('rsvp-val').value.trim();
+  var err = document.getElementById('rsvp-error');
+  err.textContent = '';
+
+  if (rsvpType === 'email') {
+    if (!val || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+      err.textContent = 'Please enter a valid email address.';
+      return;
+    }
+  } else {
+    if (val.replace(/\D/g, '').length < 7) {
+      err.textContent = 'Please enter a valid phone number.';
+      return;
+    }
+  }
+
+  var btn = document.getElementById('rsvp-submit');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    var res = await fetch('/api/rsvp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event: 'updates', type: rsvpType, value: val })
+    });
+    if (!res.ok) throw new Error();
+    document.getElementById('rsvp-form').style.display = 'none';
+    document.getElementById('rsvp-done').style.display = 'block';
+  } catch (e) {
+    err.textContent = 'Something went wrong. Please try again.';
+    btn.disabled = false;
+    btn.textContent = 'Keep me updated →';
+  }
+}
+</script>
+
+</body>
+</html>
